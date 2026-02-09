@@ -1,0 +1,25 @@
+{
+  "name": "blogapi",
+  "version": "1.0.0",
+  "description": "implementation of REST API with 2 frontends",
+  "homepage": "https://github.com/HorrySheet11/blogAPI#readme",
+  "bugs": {
+    "url": "https://github.com/HorrySheet11/blogAPI/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HorrySheet11/blogAPI.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "module",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^17.2.4",
+    "express": "^5.2.1"
+  }
+}
