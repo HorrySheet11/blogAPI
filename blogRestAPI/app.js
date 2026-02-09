@@ -2,6 +2,8 @@ import 'dotenv/config';
 import express from 'express';
 import cors from 'cors'
 import routes from './routers/usersRouter.js';
+import session from "express-session";
+import passport from 'passport';
 
 const app = express();
 app.use(express.json());
