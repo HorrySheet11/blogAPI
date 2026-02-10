@@ -6,9 +6,9 @@ function Home() {
 	// const [user, setUser] = useState(null);
 	// const [posts, setPosts] = useState([]);
 	// const [comments, setComments] = useState([]);
-	const user = {username: "Bubba"}
+	// const user = {username: "Bubba"}
 	const dialogRef = useRef(null);
-	// const user = null;
+	const user = null;
 	const posts = [
 		{
 			id: 1,
@@ -34,10 +34,10 @@ function Home() {
 			content: "This is the second comment",
 		},
 	];
-  console.log(process.env.REACT_APP_API_URL)
+  // FIXME: process.env not working
 	useEffect(() => {
 		axios
-			.get(process.env.REACT_APP_API_URL)
+			.get(`${process.env.REACT_APP_API_URL}`)
 			.then((res) => {
 				setUser(res.user);
 				setPosts(res.posts);
@@ -59,7 +59,7 @@ function Home() {
 			</dialog>
 			{user ? (
 				<>
-					<h1>Welcome {user.username}</h1>
+					<h2>Welcome {user.username}</h2>
 					<div id="blog">
 						{posts.map((post) => {
 							return (
