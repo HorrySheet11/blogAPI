@@ -6,9 +6,9 @@ function Home() {
 	// const [user, setUser] = useState(null);
 	// const [posts, setPosts] = useState([]);
 	// const [comments, setComments] = useState([]);
-	// const user = {username: "Bubba"}
-  const dialogRef = useRef(null);
-	const user = null;
+	const user = {username: "Bubba"}
+	const dialogRef = useRef(null);
+	// const user = null;
 	const posts = [
 		{
 			id: 1,
@@ -34,9 +34,10 @@ function Home() {
 			content: "This is the second comment",
 		},
 	];
+  console.log(process.env.REACT_APP_API_URL)
 	useEffect(() => {
 		axios
-			.get("/")
+			.get(process.env.REACT_APP_API_URL)
 			.then((res) => {
 				setUser(res.user);
 				setPosts(res.posts);
@@ -47,45 +48,53 @@ function Home() {
 			});
 	}, []);
 
-  const openModal = () => dialogRef.current?.showModal();
-  const closeModal = () => dialogRef.current?.close();
+	const openModal = () => dialogRef.current?.showModal();
+	const closeModal = () => dialogRef.current?.close();
 
-  return (
-		<>
-			{user ? (
-				<h1>Welcome {user.username}</h1>
-			) : (
-				<button onClick={openModal} type="button">
-					Log In
-				</button>
-			)}
+	return (
+		<div id="home">
+      <h1>Horry Blog</h1>
 			<dialog ref={dialogRef}>
-				<Login closeModal={closeModal}/>
+				<Login closeModal={closeModal} />
 			</dialog>
-			<div id="blog">
-				{posts.map((post) => {
-					return (
-						<a href={`/posts/${post.id}`} key={post.id}>
-							<div>
-								<h2>{post.title}</h2>
-								<h3>By: {post.user}</h3>
-								<p>{post.content}</p>
-							</div>
-						</a>
-					);
-				})}
-				{comments.map((comment) => {
-					return (
-						<a href={`/comments/${comment.id}`} key={comment.id}>
-							<div>
-								<h2>{comment.username}</h2>
-								<p>{comment.content}</p>
-							</div>
-						</a>
-					);
-				})}
-			</div>
-		</>
+			{user ? (
+				<>
+					<h1>Welcome {user.username}</h1>
+					<div id="blog">
+						{posts.map((post) => {
+							return (
+								<a href={`/posts/${post.id}`} key={post.id}>
+									<div>
+										<h2>{post.title}</h2>
+										<h3>By: {post.user}</h3>
+										<p>{post.content}</p>
+									</div>
+								</a>
+							);
+						})}
+					</div>
+					<div id="comments">
+						{comments.map((comment) => {
+							return (
+								<a href={`/comments/${comment.id}`} key={comment.id}>
+									<div>
+										<h2>{comment.username}</h2>
+										<p>{comment.content}</p>
+									</div>
+								</a>
+							);
+						})}
+					</div>
+				</>
+			) : (
+				<>
+					<h2>Not logged in</h2>
+					<button onClick={openModal} type="button">
+						Log In
+					</button>
+				</>
+			)}
+		</div>
 	);
 }
 
