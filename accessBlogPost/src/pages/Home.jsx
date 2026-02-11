@@ -37,7 +37,7 @@ function Home() {
   // FIXME: process.env not working
 	useEffect(() => {
 		axios
-			.get(`${process.env.REACT_APP_API_URL}`)
+			.get(import.meta.env.VITE_API_URL)
 			.then((res) => {
 				setUser(res.user);
 				setPosts(res.posts);

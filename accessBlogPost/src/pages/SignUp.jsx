@@ -18,7 +18,7 @@ function SignUp() {
 	const handleSubmit = (e) => {
 		e.preventDefault();
 		try {
-			const response = axios.post(`${process.env.REACT_APP_API_URL}/sign-up`, formData, {
+			const response = axios.post(`${import.meta.env.VITE_API_URL}/sign-up`, formData, {
 				headers: {
 					"Content-Type": "application/json",
 				},
@@ -42,7 +42,7 @@ function SignUp() {
 						name="name"
 						value={formData.name}
 						onChange={handleChange}
-						require
+						require='true'
 					/>
 				</label>
 				<label htmlFor="email">
@@ -52,7 +52,7 @@ function SignUp() {
 						name="email"
 						value={formData.email}
 						onChange={handleChange}
-						require
+						require='true'
 					/>
 				</label>
 				<label htmlFor="password">
@@ -62,11 +62,12 @@ function SignUp() {
 						name="password"
 						value={formData.password}
 						onChange={handleChange}
-						require
+						require='true'
 					/>
 				</label>
 				<button type="submit">Sign Up</button>
 			</form>
+      <a href="/">Back</a>
 		</div>
 	);
 }

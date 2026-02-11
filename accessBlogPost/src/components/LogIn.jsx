@@ -17,7 +17,7 @@ function LogIn({closeModal}){
 	const handleSubmit = (e) => {
 		e.preventDefault();
 		try {
-			const response = axios.post(`${process.env.REACT_APP_API_URL}/log-in`, formData, {
+			const response = axios.post(`${import.meta.env.VITE_API_URL}/log-in`, formData, {
 				headers: {
 					"Content-Type": "application/json",
 				},
@@ -37,10 +37,10 @@ function LogIn({closeModal}){
       <form onSubmit={handleSubmit}>
         <label>Email: <br /><input type="email" name="email" value={logInData.email}
 						onChange={handleChange}
-						require/></label>
+						require='true'/></label>
         <label>Password: <br /><input type="password" name="password" value={logInData.password}
 						onChange={handleChange}
-						require /></label>
+						require='true' /></label>
         <div>
           <button type="submit">Log In</button>
           <button type="button" onClick={() => closeModal()}>Close</button>
