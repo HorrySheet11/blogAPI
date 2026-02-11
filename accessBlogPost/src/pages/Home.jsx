@@ -1,11 +1,12 @@
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import Login from "../components/LogIn";
+import Header from "../components/Header";
 import "./Home.css";
 import { useNavigate } from "react-router-dom";
 
 function Home() {
-	// const [user, setUser] = useState(null);
+  // const { user, loading } = useContext(AuthContext);
 	// const [posts, setPosts] = useState([]);
 	// const [comments, setComments] = useState([]);
 	const user = { username: "Bubba" };
@@ -28,16 +29,7 @@ function Home() {
 		},
 	];
 
-	const comments = [
-		{
-			id: 1,
-			content: "This is the first comment",
-		},
-		{
-			id: 2,
-			content: "This is the second comment",
-		},
-	];
+
 	useEffect(() => {
 		axios
 			.get(import.meta.env.VITE_API_URL)
@@ -60,14 +52,12 @@ function Home() {
     };
   };
 	return (
-		<div id="home">
-			<h1>Horry Blog</h1>
+    <div id="home">
+      <Header />
 			<dialog ref={dialogRef}>
 				<Login closeModal={closeModal} />
 			</dialog>
 			{user ? (
-				<>
-					<h2>Welcome {user.username}</h2>
 					<div id="blog">
 						<ul>
 							{posts.map((post) => {
@@ -83,19 +73,6 @@ function Home() {
 							})}
 						</ul>
 					</div>
-					<div id="comments">
-						{comments.map((comment) => {
-							return (
-								<a href={`/comments/${comment.id}`} key={comment.id}>
-									<div>
-										<h2>{comment.username}</h2>
-										<p>{comment.content}</p>
-									</div>
-								</a>
-							);
-						})}
-					</div>
-				</>
 			) : (
 				<>
 					<h2>Not logged in</h2>

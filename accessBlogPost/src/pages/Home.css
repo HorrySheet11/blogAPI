@@ -2,6 +2,11 @@ body{
   justify-content: flex-start;
   flex-direction:column;
   overflow-y: auto;
+  position:relative;
+}
+
+#home{
+  padding-top:50px;
 }
 
 .post{
