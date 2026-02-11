@@ -15,8 +15,9 @@ function InspectPost(){
 
   return(
     <div>
-      <h1>Inspect Post</h1>
-      <h1>Post ID: {id}</h1>
+      <h1>{postData?.title}</h1>
+      <p>{postData?.content}</p>
+      <h3>Author: {postData?.author}</h3>
       <button type="button" onClick={()=>nav("/")}>Back</button>
     </div>
   )
