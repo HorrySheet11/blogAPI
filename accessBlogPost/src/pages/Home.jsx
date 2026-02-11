@@ -1,14 +1,18 @@
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import Login from "../components/LogIn";
+import "./Home.css";
+import { useNavigate } from "react-router-dom";
 
 function Home() {
 	// const [user, setUser] = useState(null);
 	// const [posts, setPosts] = useState([]);
 	// const [comments, setComments] = useState([]);
-	// const user = {username: "Bubba"}
+	const user = { username: "Bubba" };
+	// const user = null;
 	const dialogRef = useRef(null);
-	const user = null;
+  const nav = useNavigate();
+
 	const posts = [
 		{
 			id: 1,
@@ -34,7 +38,6 @@ function Home() {
 			content: "This is the second comment",
 		},
 	];
-  // FIXME: process.env not working
 	useEffect(() => {
 		axios
 			.get(import.meta.env.VITE_API_URL)
@@ -51,9 +54,14 @@ function Home() {
 	const openModal = () => dialogRef.current?.showModal();
 	const closeModal = () => dialogRef.current?.close();
 
+  const goToPost = (id) => {
+    return () => {
+      nav(`/post/${id}`);
+    };
+  };
 	return (
 		<div id="home">
-      <h1>Horry Blog</h1>
+			<h1>Horry Blog</h1>
 			<dialog ref={dialogRef}>
 				<Login closeModal={closeModal} />
 			</dialog>
@@ -61,17 +69,19 @@ function Home() {
 				<>
 					<h2>Welcome {user.username}</h2>
 					<div id="blog">
-						{posts.map((post) => {
-							return (
-								<a href={`/posts/${post.id}`} key={post.id}>
-									<div>
-										<h2>{post.title}</h2>
-										<h3>By: {post.user}</h3>
-										<p>{post.content}</p>
-									</div>
-								</a>
-							);
-						})}
+						<ul>
+							{posts.map((post) => {
+								return (
+									<li key={post.id} className="post">
+										<button type='button' onClick={goToPost(post.id)}>
+												<h2>{post.title}</h2>
+												<h4>By: {post.user}</h4>
+												<p>{post.content}</p>
+										</button>
+									</li>
+								);
+							})}
+						</ul>
 					</div>
 					<div id="comments">
 						{comments.map((comment) => {

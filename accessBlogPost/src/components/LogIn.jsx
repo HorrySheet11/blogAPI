@@ -1,7 +1,10 @@
 import { useState } from 'react';
 import './LogIn.css'
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function LogIn({closeModal}){
+  const nav = useNavigate();
   const [logInData, setLogInData] = useState({
     email: "",
     password: "",
@@ -31,6 +34,9 @@ function LogIn({closeModal}){
     closeModal();
 	};
 
+  const goToSignUp = () => {
+    nav("/sign-up")
+  }
   return(
     <>
       <h2>Log In</h2>
@@ -44,7 +50,7 @@ function LogIn({closeModal}){
         <div>
           <button type="submit">Log In</button>
           <button type="button" onClick={() => closeModal()}>Close</button>
-          <h4>Not a member? <a href="/sign-up">Sign Up</a></h4>
+          <h4>Not a member? <button type='button' onClick={goToSignUp}>Sign Up</button></h4>
         </div>
       </form>
     </ >

@@ -1,7 +1,13 @@
 import axios from "axios";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function SignUp() {
+  const nav = useNavigate();
+
+  const goToHome = () => {
+    nav("/");
+  }
 	const [formData, setFormData] = useState({
 		name: "",
 		email: "",
@@ -67,7 +73,7 @@ function SignUp() {
 				</label>
 				<button type="submit">Sign Up</button>
 			</form>
-      <a href="/">Back</a>
+      <button type="button" onClick={goToHome}>Back</button>
 		</div>
 	);
 }
