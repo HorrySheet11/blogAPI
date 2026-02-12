@@ -69,6 +69,7 @@ function SignUp() {
 						value={formData.password}
 						onChange={handleChange}
 						require='true'
+						min='8'
 					/>
 				</label>
 				<button type="submit">Sign Up</button>

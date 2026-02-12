@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect } from "react";
+import  { createContext, useState, useEffect } from "react";
 import axios from "axios"; 
 
 export const AuthContext = createContext(null);
@@ -11,7 +11,10 @@ export const AuthProvider = ({ children }) => {
     const fetchUser = async () => {
       try {
         // const currentUser = axios.get(`${import.meta.env.VITE_API_URL}/user`);
-        const currentUser = { username: "Horry!" };
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/user`, {
+          withCredentials: true
+        });
+        const currentUser = response.data;
         setUser(currentUser);
       } catch (err) {
         console.error("Failed to fetch user:", err);
@@ -23,7 +26,7 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, loading }}>
+    <AuthContext.Provider value={{ user, loading,setUser }}>
       {children}
     </AuthContext.Provider>
   );

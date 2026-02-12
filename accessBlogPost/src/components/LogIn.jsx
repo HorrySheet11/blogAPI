@@ -1,9 +1,11 @@
-import { useState } from 'react';
+import { useState,useContext } from 'react';
 import './LogIn.css'
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { AuthContext } from "../context/AuthContext.jsx";
 
 function LogIn({closeModal}){
+  const {setUser} = useContext(AuthContext);
   const nav = useNavigate();
   const [logInData, setLogInData] = useState({
     email: "",
@@ -25,6 +27,7 @@ function LogIn({closeModal}){
 					"Content-Type": "application/json",
 				},
 			});
+      setUser(response.user);
 			console.log("Server Response:", response.data);
 			alert("Logged in successfully!");
 		} catch (error) {
