@@ -1,7 +1,8 @@
 import passport from "passport";
 import { ExtractJwt, Strategy as JwtStrategy } from "passport-jwt";
 import { Strategy as LocalStrategy } from "passport-local";
-import query from "../models/User.js";
+import * as  query from "../models/User.js";
+import bcrypt from "bcryptjs"
 
 passport.use(
 	new LocalStrategy(
@@ -17,14 +18,15 @@ passport.use(
 				}
 
 				const isValidPassword = await bcrypt.compare(password, user.password);
-
+        
 				if (!isValidPassword) {
-					return done(null, false, { message: "Invalid credentials" });
+					return done(null, false, { message: "Invalid password" });
 				}
 
 				const { password: _, ...userWithoutPassword } = user;
 				return done(null, userWithoutPassword);
 			} catch (error) {
+        console.log('ERROR!')
 				return done(error);
 			}
 		},

@@ -32,6 +32,7 @@ export function loginPost(req, res, next) {
 			}
 		},
 	)(req, res, next);
+	//FIXME: Unknown authentication strategy "local" 
 }
 
 export function logout(req, res) {
