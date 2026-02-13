@@ -24,7 +24,7 @@ function SignUp() {
 	const handleSubmit = (e) => {
 		e.preventDefault();
 		try {
-			const response = axios.post(`${import.meta.env.VITE_API_URL}/sign-up`, formData, {
+			const response = axios.post(`${import.meta.env.VITE_API_URL}/user/sign-up`, formData, {
 				headers: {
 					"Content-Type": "application/json",
 				},

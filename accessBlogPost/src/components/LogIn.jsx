@@ -22,7 +22,7 @@ function LogIn({closeModal}){
 	const handleSubmit = (e) => {
 		e.preventDefault();
 		try {
-			const response = axios.post(`${import.meta.env.VITE_API_URL}/log-in`, formData, {
+			const response = axios.post(`${import.meta.env.VITE_API_URL}/user/log-in`, formData, {
 				headers: {
 					"Content-Type": "application/json",
 				},

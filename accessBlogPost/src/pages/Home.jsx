@@ -34,7 +34,6 @@ function Home() {
 		axios
 			.get(import.meta.env.VITE_API_URL)
 			.then((res) => {
-				setUser(res.user);
 				setPosts(res.posts);
 				setComments(res.comments);
 			})
