@@ -28,8 +28,10 @@ function LogIn({closeModal}){
 				},
 			});
       setUser(response.user);
+      localStorage.setItem('token', response.accessToken);
 			console.log("Server Response:", response.data);
 			alert("Logged in successfully!");
+      nav("/");
 		} catch (error) {
 			console.error("Error logging in:", error);
 			alert("Log in failed.");

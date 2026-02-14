@@ -2,11 +2,19 @@ import { useNavigate } from "react-router-dom";
 import {useState, useContext} from 'react';
 import './Header.css';
 import { AuthContext } from "../context/AuthContext.jsx";
+import axios from 'axios';
 
 function Header() {
-  const { user, loading } = useContext(AuthContext);
+  const { user, loading,setUser } = useContext(AuthContext);
+	const nav = useNavigate();
 
-  const nav = useNavigate();
+	const logout = () => {
+		localStorage.removeItem("token");
+		const response = axios.get(`${import.meta.env.VITE_API_URL}/user/log-out`);
+		setUser(null);
+		nav("/user/log-in");
+	};
+
 	return (
 		<div className="header">
 			<h2>Horry Blog</h2>
@@ -18,19 +26,19 @@ function Header() {
 				{!user ? (
 					<>
 						<li>
-							<button type="button" onClick={()=>nav('/log-in')}>Log in</button>
+							<button type="button" onClick={()=>nav('/user/log-in')}>Log in</button>
 						</li>
 						<li>
-							<button type="button" onClick={()=>nav('/sign-up')}>Sign up</button>
+							<button type="button" onClick={()=>nav('/user/sign-up')}>Sign up</button>
 						</li>
 					</>
         ) : (
           <>
             <li>
-              <button type="button" onClick={()=>nav('new-post')}>New Post</button>
+              <button type="button" onClick={()=>nav('/post/new-post')}>New Post</button>
             </li>
             <li>
-              <button type="button" onClick={()=>nav('/log-out')}>Log out</button>
+              <button type="button" onClick={logout}>Log out</button>
             </li>
           </>
         )}

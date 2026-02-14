@@ -2,8 +2,9 @@ import {Router} from 'express';
 const userRouter = Router();
 import * as userController from '../controllers/usersController.js';
 
-userRouter.post('/log-in', userController.loginPost);
+userRouter.post('/log-in' , userController.login);
 userRouter.get('/log-out', userController.logout);
-userRouter.post('/sign-up',  userController.signUpPost);
+userRouter.post('/sign-up',  userController.signUp);
+userRouter.get('refresh', userController.refreshToken);
 
 export default userRouter;

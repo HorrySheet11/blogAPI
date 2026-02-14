@@ -7,25 +7,9 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // useEffect(() => {
-  //   const fetchUser = async () => {
-  //     try {
-  //       const response = await axios.get(`${import.meta.env.VITE_API_URL}/user`, {
-  //         withCredentials: true
-  //       });
-  //       const currentUser = response.data;
-  //       setUser(currentUser);
-  //     } catch (err) {
-  //       console.error("Failed to fetch user:", err);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-  //   fetchUser();
-  // }, []);
 
   return (
-    <AuthContext.Provider value={{ user, loading,setUser }}>
+    <AuthContext.Provider value={{ user, setUser, token, setToken, loading }}>
       {children}
     </AuthContext.Provider>
   );

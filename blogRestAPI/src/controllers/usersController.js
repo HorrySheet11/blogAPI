@@ -3,7 +3,7 @@ import passport from "passport";
 import {createUser, findUserByEmail, saveRefreshToken } from "../models/User.js";
 import { generateTokenPair, verifyToken } from "../utils/jwt.js";
 
-export function loginPost(req, res, next) {
+export function login(req, res, next) {
 	passport.authenticate(
 		"local",
 		{ session: false },
@@ -27,23 +27,27 @@ export function loginPost(req, res, next) {
 					user: { id: user.id, email: user.email, name: user.name },
 					...tokens,
 				});
+
 			} catch (error) {
 				res.status(500).json({ error: "Token generation failed" });
 			}
 		},
 	)(req, res, next);
-	//FIXME: Unknown authentication strategy "local" 
 }
 
 export function logout(req, res) {
-	res.render("logout.ejs");
+	req.logout((err) => {
+		if (err) {
+			return res.status(500).json({ error: "Logout error" });
+		}
+		res.status(200).json({ message: "Logout successful" });
+	})
 }
 
-export async function signUpPost(req, res) {
+export async function signUp(req, res) {
 	try {
 		const { email, password, name } = req.body;
 
-		// Validate input
 		if (!email || !password || !name) {
 			return res.status(400).json({ error: "All fields are required" });
 		}
@@ -54,23 +58,19 @@ export async function signUpPost(req, res) {
 				.json({ error: "Password must be at least 8 characters" });
 		}
 
-		// Check if user exists
 		const existingUser = await findUserByEmail(email);
 		if (existingUser) {
 			return res.status(409).json({ error: "Email already registered" });
 		}
 
-		// Hash password
 		const hashedPassword = await bcrypt.hash(password, 12);
 
-		// Create user
 		const user = await createUser({
 			email: email.toLowerCase(),
 			password: hashedPassword,
 			name,
 		});
 
-		// Generate tokens
 		const tokens = generateTokenPair(user);
 		await saveRefreshToken(user.id, tokens.refreshToken);
 
@@ -84,3 +84,32 @@ export async function signUpPost(req, res) {
 		res.status(500).json({ error: "Registration failed" });
 	}
 }
+
+export async function refreshToken(req, res) {
+  const { refreshToken } = req.body;
+
+  if (!refreshToken) {
+    return res.status(400).json({ error: 'Refresh token required' });
+  }
+
+  try {
+    const payload = verifyToken(refreshToken);
+    
+    if (!payload || payload.type !== 'refresh') {
+      return res.status(401).json({ error: 'Invalid refresh token' });
+    }
+
+    const user = await findUserById(payload.sub);
+    
+    if (!user) {
+      return res.status(401).json({ error: 'User not found' });
+    }
+
+    const tokens = generateTokenPair(user);
+    await saveRefreshToken(user.id, tokens.refreshToken);
+
+    res.json(tokens);
+  } catch (error) {
+    res.status(401).json({ error: 'Token refresh failed' });
+  }
+};

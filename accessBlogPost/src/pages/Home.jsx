@@ -32,7 +32,7 @@ function Home() {
 
 	useEffect(() => {
 		axios
-			.get(import.meta.env.VITE_API_URL)
+			.get(import.meta.env.VITE_API_URL + '/post/all')
 			.then((res) => {
 				setPosts(res.posts);
 				setComments(res.comments);
