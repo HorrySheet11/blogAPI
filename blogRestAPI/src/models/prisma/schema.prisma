@@ -24,10 +24,11 @@ model User {
 }
 
 model Blog {
-  id        Int     @id @default(autoincrement())
+  id          Int   @id @default(autoincrement())
+  authorName  String
   
-  author    User    @relation(fields: [authorId], references: [id])
-  authorId  Int @unique
+  author    User  @relation(fields: [authorId], references: [id])
+  authorId  Int   @unique
   posts     Post[]
 }  
 

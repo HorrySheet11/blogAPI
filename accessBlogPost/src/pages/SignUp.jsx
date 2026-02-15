@@ -4,16 +4,17 @@ import { useNavigate } from "react-router-dom";
 
 function SignUp() {
   const nav = useNavigate();
-
-  const goToHome = () => {
-    nav("/");
-  }
+	const [responseData, setResponseData] = useState(null);
 	const [formData, setFormData] = useState({
 		name: "",
 		email: "",
 		password: "",
 	});
 
+	const goToHome = () => {
+		nav("/");
+	}
+	
 	const handleChange = (e) => {
 		setFormData({
 			...formData,
@@ -21,19 +22,21 @@ function SignUp() {
 		});
 	};
 
-	const handleSubmit = (e) => {
+	const handleSubmit = async (e) => {
 		e.preventDefault();
 		try {
-			const response = axios.post(`${import.meta.env.VITE_API_URL}/user/sign-up`, formData, {
+			const response = await axios.post(`${import.meta.env.VITE_API_URL}/user/sign-up`, formData, {
 				headers: {
 					"Content-Type": "application/json",
 				},
+				timeout: 5000,
 			});
-			console.log("Server Response:", response.data);
-			alert("Form submitted successfully!");
+			setResponseData(response.data)
+			return alert("Server Response:", responseData);
 		} catch (error) {
 			console.error("Error submitting form:", error);
 			alert("Failed to submit form.");
+			return;
 		}
 	};
 

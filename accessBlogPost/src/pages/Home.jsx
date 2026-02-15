@@ -1,49 +1,24 @@
 import axios from "axios";
-import { useEffect, useRef, useState } from "react";
-import Login from "../components/LogIn";
+import { useEffect, useState, useContext } from "react";
 import Header from "../components/Header";
 import "./Home.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext.jsx";
 
 function Home() {
-  // const { user, loading } = useContext(AuthContext);
-	// const [posts, setPosts] = useState([]);
-	// const [comments, setComments] = useState([]);
-	const user = { username: "Bubba" };
-	// const user = null;
-	const dialogRef = useRef(null);
+  const { user, loading } = useContext(AuthContext);
+	const [posts, setPosts] = useState([]);
   const nav = useNavigate();
 
-	const posts = [
-		{
-			id: 1,
-			title: "First Post",
-			user: "user1",
-			content: "This is the first post",
-		},
-		{
-			id: 2,
-			title: "Second Post",
-			user: "user2",
-			content: "This is the second post",
-		},
-	];
-
-
 	useEffect(() => {
-		axios
-			.get(import.meta.env.VITE_API_URL + '/post/all')
-			.then((res) => {
-				setPosts(res.posts);
-				setComments(res.comments);
-			})
-			.catch((err) => {
-				console.log(err);
-			});
-	}, []);
+		// try {
+			const response = axios.get(`${import.meta.env.VITE_API_URL}/post`);
+			setPosts(response.data);
+		// } catch (error) {
+		// 	console.log(error);
+		// }
+	},[])
 
-	const openModal = () => dialogRef.current?.showModal();
-	const closeModal = () => dialogRef.current?.close();
 
   const goToPost = (id) => {
     return () => {
@@ -53,9 +28,6 @@ function Home() {
 	return (
     <div id="home">
       <Header />
-			<dialog ref={dialogRef}>
-				<Login closeModal={closeModal} />
-			</dialog>
 			{user ? (
 					<div id="blog">
 						<ul>
@@ -73,12 +45,7 @@ function Home() {
 						</ul>
 					</div>
 			) : (
-				<>
-					<h2>Not logged in</h2>
-					<button onClick={openModal} type="button">
-						Log In
-					</button>
-				</>
+				<h2>Not logged in</h2>
 			)}
 		</div>
 	);

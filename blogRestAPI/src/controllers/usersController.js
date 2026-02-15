@@ -1,7 +1,14 @@
 import bcrypt from "bcryptjs";
 import passport from "passport";
-import {createUser, findUserByEmail, saveRefreshToken } from "../models/User.js";
+import {
+	createUser,
+	findUserByEmail,
+	saveRefreshToken,
+} from "../models/User.js";
 import { generateTokenPair, verifyToken } from "../utils/jwt.js";
+import { enhanceConsoleLog } from "../utils/log.js";
+
+enhanceConsoleLog();
 
 export function login(req, res, next) {
 	passport.authenticate(
@@ -20,14 +27,13 @@ export function login(req, res, next) {
 
 			try {
 				const tokens = generateTokenPair(user);
-				await saveRefreshToken(user.id, tokens.refreshToken,);
+				await saveRefreshToken(user.id, tokens.refreshToken);
 
 				res.json({
 					message: "Login successful",
 					user: { id: user.id, email: user.email, name: user.name },
 					...tokens,
 				});
-
 			} catch (error) {
 				res.status(500).json({ error: "Token generation failed" });
 			}
@@ -41,10 +47,11 @@ export function logout(req, res) {
 			return res.status(500).json({ error: "Logout error" });
 		}
 		res.status(200).json({ message: "Logout successful" });
-	})
+	});
 }
 
 export async function signUp(req, res) {
+	console.log(req.body);
 	try {
 		const { email, password, name } = req.body;
 
@@ -59,8 +66,10 @@ export async function signUp(req, res) {
 		}
 
 		const existingUser = await findUserByEmail(email);
+		console.log(`existingUser:`);
+		console.log(existingUser);
 		if (existingUser) {
-			return res.status(409).json({ error: "Email already registered" });
+			return res.json({ error: "Email already registered" }).status(409);
 		}
 
 		const hashedPassword = await bcrypt.hash(password, 12);
@@ -69,6 +78,10 @@ export async function signUp(req, res) {
 			email: email.toLowerCase(),
 			password: hashedPassword,
 			name,
+			//FIXME: fix autocreate blog on user create
+			blog: {
+				create: { authorName: name },
+			},
 		});
 
 		const tokens = generateTokenPair(user);
@@ -86,30 +99,30 @@ export async function signUp(req, res) {
 }
 
 export async function refreshToken(req, res) {
-  const { refreshToken } = req.body;
+	const { refreshToken } = req.body;
 
-  if (!refreshToken) {
-    return res.status(400).json({ error: 'Refresh token required' });
-  }
+	if (!refreshToken) {
+		return res.status(400).json({ error: "Refresh token required" });
+	}
 
-  try {
-    const payload = verifyToken(refreshToken);
-    
-    if (!payload || payload.type !== 'refresh') {
-      return res.status(401).json({ error: 'Invalid refresh token' });
-    }
+	try {
+		const payload = verifyToken(refreshToken);
 
-    const user = await findUserById(payload.sub);
-    
-    if (!user) {
-      return res.status(401).json({ error: 'User not found' });
-    }
+		if (!payload || payload.type !== "refresh") {
+			return res.status(401).json({ error: "Invalid refresh token" });
+		}
 
-    const tokens = generateTokenPair(user);
-    await saveRefreshToken(user.id, tokens.refreshToken);
+		const user = await findUserById(payload.sub);
 
-    res.json(tokens);
-  } catch (error) {
-    res.status(401).json({ error: 'Token refresh failed' });
-  }
-};
+		if (!user) {
+			return res.status(401).json({ error: "User not found" });
+		}
+
+		const tokens = generateTokenPair(user);
+		await saveRefreshToken(user.id, tokens.refreshToken);
+
+		res.json(tokens);
+	} catch (error) {
+		res.status(401).json({ error: "Token refresh failed" });
+	}
+}

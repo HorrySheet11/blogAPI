@@ -5,38 +5,43 @@ import axios from "axios";
 import { AuthContext } from "../context/AuthContext.jsx";
 
 function LogIn({closeModal}){
-  const {setUser} = useContext(AuthContext);
+  const {setUser,} = useContext(AuthContext);
   const nav = useNavigate();
   const [logInData, setLogInData] = useState({
     email: "",
     password: "",
-  })
+  });
+
 
   const handleChange = (e) => {
 		setLogInData({
-			...formData,
+			...logInData,
 			[e.target.name]: e.target.value,
 		});
 	};
 
-	const handleSubmit = (e) => {
-		e.preventDefault();
+	const handleSubmit = async (e) => {
+    e.preventDefault();
+    console.log(logInData);
 		try {
-			const response = axios.post(`${import.meta.env.VITE_API_URL}/user/log-in`, formData, {
+			const response = await axios.post(`${import.meta.env.VITE_API_URL}/user/log-in`, logInData, {
 				headers: {
 					"Content-Type": "application/json",
 				},
+        timeout: 5000,
 			});
-      setUser(response.user);
-      localStorage.setItem('token', response.accessToken);
-			console.log("Server Response:", response.data);
+      const data = response.data;
+      setUser(data.user);
+      localStorage.setItem('token', data.accessToken);
 			alert("Logged in successfully!");
+      console.log("Server Response:", data);
+      closeModal();
       nav("/");
 		} catch (error) {
 			console.error("Error logging in:", error);
 			alert("Log in failed.");
 		}
-    closeModal();
+    return;
 	};
 
   const goToSignUp = () => {

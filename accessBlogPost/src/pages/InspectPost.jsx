@@ -4,37 +4,20 @@ import { useParams,useNavigate } from "react-router-dom";
 import Header from '../components/Header';
 
 function InspectPost(){
-  // const [postData, setPostData] = useState(null);
+  const [postData, setPostData] = useState(null);
   const {id}= useParams();
   const nav = useNavigate();
 
-  useEffect(() => {
+  useEffect(async () => {
     try {
-      const response = axios.get(`${import.meta.env.VITE_API_URL}/post/${id}`);
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/post/${id}`);
       setPostData(response.data);
+      return;
     } catch (error) {
       console.log(error);
     }
   },[id]);
 
-  const postData = {
-    id: 1,
-    title: "First Post",
-    content: "This is the first post",
-    author: "John Doe",
-    comments: [
-      {
-        id: 1,
-        username: "user1",
-        content: "This is the first comment",
-      },
-      {
-        id: 2,
-        username: "user2",
-        content: "This is the second comment",
-      },
-    ],
-  }
 
   return(
     <div>
