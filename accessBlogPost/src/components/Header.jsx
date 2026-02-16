@@ -1,6 +1,7 @@
 import { useContext, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Header.css";
+import { jwtDecode } from "jwt-decode";
 import Login from "../components/LogIn";
 import { AuthContext } from "../context/AuthContext.jsx";
 import API from "../utils/api.js";
@@ -10,12 +11,28 @@ function Header() {
 	const nav = useNavigate();
 	const dialogRef = useRef(null);
 
+	//* get user if existing token
+	if (!user && localStorage.getItem("token")) {
+		const decoded = jwtDecode(localStorage.getItem("token"));
+		const id = decoded.sub;
+		async function getUser(id) {
+			try {
+				const response = await API.get(`/user/${id}`);
+				setUser(response.data);
+			} catch (error) {
+				console.log(error);
+			}
+			return;
+		}
+		getUser(id);
+	}
+
 	const logout = async () => {
 		try {
 			console.log(user);
 			const response = await API.get(`/user/log-out`);
 			setUser(null);
-			alert('Logged out successfully!');
+			alert("Logged out successfully!");
 			nav("/");
 			openModal;
 			localStorage.removeItem("token");

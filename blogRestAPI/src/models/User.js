@@ -1,32 +1,58 @@
-import {prisma} from '../config/prisma.js';
+import { prisma } from "../config/prisma.js";
 
 export async function getAllUsers() {
-  return await prisma.user.findMany();
+	return await prisma.user.findMany();
 }
 
 //TODO: make all other functions
 
 export async function createUser(user) {
-  return await prisma.user.create({
-    data: user,
-  });
+	return await prisma.user.create({
+		data: user,
+	});
 }
 
 export async function findUserByEmail(email) {
-  return await prisma.user.findUnique({
-    where: {
-      email: email,
-    },
-  });
+	return await prisma.user.findUnique({
+		where: {
+			email: email,
+		},
+	});
 }
 
-export async function saveRefreshToken(id, token){
-  // return await prisma.tokens.create({
-  //   data: {
-  //     userId: id,
-  //     refreshToken: token
-  //   }
-  // })
-  // console.log(id,token);
-  return ;
+export async function saveRefreshToken(id, token) {
+	// return await prisma.tokens.create({
+	//   data: {
+	//     userId: id,
+	//     refreshToken: token
+	//   }
+	// })
+	// console.log(id,token);
+	return;
+}
+
+export async function findTokenByJti(jti) {
+	return await prisma.tokens.findUnique({
+		where: {
+			jti: jti,
+		},
+	});
+}
+
+export async function blacklistToken(token,id) {
+	return await prisma.jwtBlacklist.create({
+		data: {
+			jti,
+			userId: id,
+			expiresAt: token.expiresIn,
+		},
+	});
+}
+
+export async function findUserById(id){
+  return await prisma.user.findUnique({
+    where: {
+      id: parseInt(id, 10),
+    },
+  })
 }

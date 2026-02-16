@@ -1,8 +1,8 @@
+import bcrypt from "bcryptjs";
 import passport from "passport";
 import { ExtractJwt, Strategy as JwtStrategy } from "passport-jwt";
 import { Strategy as LocalStrategy } from "passport-local";
-import * as  query from "../models/User.js";
-import bcrypt from "bcryptjs"
+import * as query from "../models/User.js";
 
 passport.use(
 	new LocalStrategy(
@@ -18,7 +18,7 @@ passport.use(
 				}
 
 				const isValidPassword = await bcrypt.compare(password, user.password);
-        
+
 				if (!isValidPassword) {
 					return done(null, false, { message: "Invalid password" });
 				}
@@ -26,7 +26,7 @@ passport.use(
 				const { password: _, ...userWithoutPassword } = user;
 				return done(null, userWithoutPassword);
 			} catch (error) {
-        console.log('ERROR!')
+				console.log("ERROR!");
 				return done(error);
 			}
 		},
@@ -42,6 +42,15 @@ passport.use(
 		},
 		async (payload, done) => {
 			try {
+				// Check if token is blacklisted
+				// const result = await pool.query(
+				// 	"SELECT 1 FROM token_blacklist WHERE token = $1 LIMIT 1",
+				// 	[jwt_payload.jti], // jti = unique token ID
+
+				const result = await query.findTokenByJti(payload.jti);
+				if (result.rowCount > 0) {
+					return done(null, false, { message: "Token is blacklisted" });
+				}
 				const user = await query.findUserById(payload.sub);
 				if (!user) {
 					return done(null, false);

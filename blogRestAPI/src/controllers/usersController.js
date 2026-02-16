@@ -4,6 +4,9 @@ import {
 	createUser,
 	findUserByEmail,
 	saveRefreshToken,
+	findTokenByJti,
+	findUserById,
+
 } from "../models/User.js";
 import { generateTokenPair, verifyToken } from "../utils/jwt.js";
 import { enhanceConsoleLog } from "../utils/log.js";
@@ -18,17 +21,14 @@ export function login(req, res, next) {
 			if (err) {
 				return res.status(500).json({ error: "Authentication error" });
 			}
-
 			if (!user) {
 				return res
 					.status(401)
 					.json({ error: info?.message || "Invalid credentials" });
 			}
-
 			try {
 				const tokens = generateTokenPair(user);
 				await saveRefreshToken(user.id, tokens.refreshToken);
-
 				res.json({
 					message: "Login successful",
 					user: { id: user.id, email: user.email, name: user.name },
@@ -40,10 +40,10 @@ export function login(req, res, next) {
 		},
 	)(req, res, next);
 }
-
-export function logout(req, res) {
+//TODO:  manage logout token
+export  function logout(req, res) {
 	passport.authenticate('jwt', { session: false }),
-  (req, res) => {
+  async (req, res) => {
     try {
       const authHeader = req.headers.authorization;
       if (!authHeader) return res.json({ message: 'No token provided' }).status(400);
@@ -52,13 +52,12 @@ export function logout(req, res) {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
       // Add token's jti to blacklist
-      tokenBlacklist.add(decoded.jti);
+      await blacklistToken(decoded, req.user.id);
       res.json({ message: 'Logged out successfully' });
     } catch (err) {
 			res.status(400).json({ message: 'Invalid token' });
     }
-  }
-}
+  }}
 
 export async function signUp(req, res) {
 	console.log(req.body);
@@ -135,4 +134,19 @@ export async function refreshToken(req, res) {
 	} catch (error) {
 		res.status(401).json({ error: "Token refresh failed" });
 	}
+}
+
+export async function getUser(req, res) {
+	try {
+		const userId = req.params.id;
+		const user = await findUserById(userId);
+		if (!user) {
+			return res.status(404).json({ error: "User not found" });
+		}
+		console.log(user);
+		return res.json(user);
+	} catch (error) {
+		res.status(500).json({ error: "Failed to retrieve user" });
+	}
+	
 }

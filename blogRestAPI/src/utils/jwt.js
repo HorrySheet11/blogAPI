@@ -2,6 +2,7 @@
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 dotenv.config();
+import { v4 as uuidv4 } from 'uuid';
 
 const JWT_SECRET = process.env.JWT_SECRET;
 const ACCESS_TOKEN_EXPIRY = '15m';
@@ -48,5 +49,6 @@ export function generateTokenPair(user) {
     accessToken: generateAccessToken(user),
     refreshToken: generateRefreshToken(user),
     expiresIn: 900, // 15 minutes in seconds
+    jti: uuidv4()
   };
 }
