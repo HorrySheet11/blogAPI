@@ -1,4 +1,4 @@
-import axios from "axios";
+import API from '../utils/api.js';
 import { useEffect, useState } from "react";
 import { useParams,useNavigate } from "react-router-dom";
 import Header from '../components/Header';
@@ -10,7 +10,7 @@ function InspectPost(){
 
   useEffect(async () => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_API_URL}/post/${id}`);
+      const response = await API.get(`/post/${id}`);
       setPostData(response.data);
       return;
     } catch (error) {

@@ -1,52 +1,53 @@
-import axios from "axios";
-import { useEffect, useState, useContext } from "react";
+import API from '../utils/api.js';
+import { useContext, useEffect, useState } from "react";
 import Header from "../components/Header";
 import "./Home.css";
-import { useNavigate, } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext.jsx";
 
+
 function Home() {
-  const { user, loading } = useContext(AuthContext);
+	const { user, loading } = useContext(AuthContext);
 	const [posts, setPosts] = useState([]);
-  const nav = useNavigate();
+	const nav = useNavigate();
 
 	useEffect(() => {
 		// try {
-			const response = axios.get(`${import.meta.env.VITE_API_URL}/post`);
-			setPosts(response.data);
+		const response = API.get(`/post`);
+		setPosts(response.data);
 		// } catch (error) {
 		// 	console.log(error);
 		// }
-	},[])
+	}, []);
 
-
-  const goToPost = (id) => {
-    return () => {
-      nav(`/post/${id}`);
-    };
-  };
+	const goToPost = (id) => {
+		return () => {
+			nav(`/post/${id}`);
+		};
+	};
 	return (
-    <div id="home">
-      <Header />
-			{user ? (
-					<div id="blog">
-						<ul>
-							{posts.map((post) => {
-								return (
-									<li key={post.id} className="post">
-										<button type='button' onClick={goToPost(post.id)}>
-												<h2>{post.title}</h2>
-												<h4>By: {post.user}</h4>
-												<p>{post.content}</p>
-										</button>
-									</li>
-								);
-							})}
-						</ul>
-					</div>
-			) : (
-				<h2>Not logged in</h2>
-			)}
+		<div id="home">
+			<Header />
+			{!user && <h2>Not logged in</h2>}
+			<div id="blog">
+				<ul>{/* FIXME: cannot read length */}
+					{!posts ? (
+						<h3>No posts</h3>
+					) : (
+						posts?.map((post) => {
+							return (
+								<li key={post.id} className="post">
+									<button type="button" onClick={goToPost(post.id)}>
+										<h2>{post.title}</h2>
+										<h4>By: {post.user}</h4>
+										<p>{post.content}</p>
+									</button>
+								</li>
+							);
+						})
+					)}
+				</ul>
+			</div>
 		</div>
 	);
 }

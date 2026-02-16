@@ -7,3 +7,7 @@ export async function findPostById(id) {
     },
   });
 }
+
+export function findAllPosts() {
+  return prisma.post.findMany();
+}

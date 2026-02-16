@@ -1,4 +1,4 @@
-import axios from "axios";
+import API from '../utils/api.js';
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -25,7 +25,7 @@ function SignUp() {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		try {
-			const response = await axios.post(`${import.meta.env.VITE_API_URL}/user/sign-up`, formData, {
+			const response = await API.post(`/user/sign-up`, formData, {
 				headers: {
 					"Content-Type": "application/json",
 				},

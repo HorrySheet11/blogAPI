@@ -1,23 +1,24 @@
+import { useContext, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import {useRef, useContext} from 'react';
-import './Header.css';
-import { AuthContext } from "../context/AuthContext.jsx";
-import axios from 'axios';
+import "./Header.css";
 import Login from "../components/LogIn";
-
+import { AuthContext } from "../context/AuthContext.jsx";
+import API from "../utils/api.js";
 
 function Header() {
-  const { user, loading,setUser } = useContext(AuthContext);
+	const { user, loading, setUser } = useContext(AuthContext);
 	const nav = useNavigate();
 	const dialogRef = useRef(null);
-	
 
 	const logout = async () => {
 		try {
-			localStorage.removeItem("token");
-			const response = await axios.get(`${import.meta.env.VITE_API_URL}/user/log-out`);
+			console.log(user);
+			const response = await API.get(`/user/log-out`);
 			setUser(null);
-			nav("/user/log-in");
+			alert('Logged out successfully!');
+			nav("/");
+			openModal;
+			localStorage.removeItem("token");
 			return;
 		} catch (error) {
 			console.log(error);
@@ -27,35 +28,44 @@ function Header() {
 	const openModal = () => dialogRef.current?.showModal();
 	const closeModal = () => dialogRef.current?.close();
 
-
 	return (
 		<>
 			<div className="header">
 				<h2>Horry Blog</h2>
-				{user && <h3>Welcome {user.username}</h3>}
+				{user && <h3>Welcome {user.name}</h3>}
 				<ul>
 					<li>
-						<button type="button" onClick={()=>nav('/')}>Home</button>
+						<button type="button" onClick={() => nav("/")}>
+							Home
+						</button>
 					</li>
 					{!user ? (
 						<>
 							<li>
-								<button type="button" onClick={openModal}>Log in</button>
+								<button type="button" onClick={openModal}>
+									Log in
+								</button>
 							</li>
 							<li>
-								<button type="button" onClick={()=>nav('/user/sign-up')}>Sign up</button>
+								<button type="button" onClick={() => nav("/user/sign-up")}>
+									Sign up
+								</button>
 							</li>
 						</>
-	        ) : (
-	          <>
-	            <li>
-	              <button type="button" onClick={()=>nav('/post/new-post')}>New Post</button>
-	            </li>
-	            <li>
-	              <button type="button" onClick={logout}>Log out</button>
-	            </li>
-	          </>
-	        )}
+					) : (
+						<>
+							<li>
+								<button type="button" onClick={() => nav("/post/create")}>
+									New Post
+								</button>
+							</li>
+							<li>
+								<button type="button" onClick={logout}>
+									Log out
+								</button>
+							</li>
+						</>
+					)}
 				</ul>
 			</div>
 			<dialog ref={dialogRef}>

@@ -1,11 +1,11 @@
+import API from '../utils/api.js';
+import { AuthContext } from "../context/AuthContext.jsx";
+import { useNavigate } from "react-router-dom";
 import { useState,useContext } from 'react';
 import './LogIn.css'
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { AuthContext } from "../context/AuthContext.jsx";
 
 function LogIn({closeModal}){
-  const {setUser,} = useContext(AuthContext);
+  const {user,setUser} = useContext(AuthContext);
   const nav = useNavigate();
   const [logInData, setLogInData] = useState({
     email: "",
@@ -24,7 +24,7 @@ function LogIn({closeModal}){
     e.preventDefault();
     console.log(logInData);
 		try {
-			const response = await axios.post(`${import.meta.env.VITE_API_URL}/user/log-in`, logInData, {
+			const response = await API.post(`/user/log-in`, logInData, {
 				headers: {
 					"Content-Type": "application/json",
 				},

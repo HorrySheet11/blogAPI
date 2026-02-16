@@ -42,12 +42,22 @@ export function login(req, res, next) {
 }
 
 export function logout(req, res) {
-	req.logout((err) => {
-		if (err) {
-			return res.status(500).json({ error: "Logout error" });
-		}
-		res.status(200).json({ message: "Logout successful" });
-	});
+	passport.authenticate('jwt', { session: false }),
+  (req, res) => {
+    try {
+      const authHeader = req.headers.authorization;
+      if (!authHeader) return res.json({ message: 'No token provided' }).status(400);
+
+      const token = authHeader.split(' ')[1];
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+      // Add token's jti to blacklist
+      tokenBlacklist.add(decoded.jti);
+      res.json({ message: 'Logged out successfully' });
+    } catch (err) {
+			res.status(400).json({ message: 'Invalid token' });
+    }
+  }
 }
 
 export async function signUp(req, res) {
