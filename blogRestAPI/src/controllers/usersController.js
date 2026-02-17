@@ -41,7 +41,7 @@ export function login(req, res, next) {
 	)(req, res, next);
 }
 //TODO:  manage logout token
-export  function logout(req, res) {
+export function logout(req, res) {
 	passport.authenticate('jwt', { session: false }),
   async (req, res) => {
     try {
@@ -52,7 +52,7 @@ export  function logout(req, res) {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
       // Add token's jti to blacklist
-      await blacklistToken(decoded, req.user.id);
+      await blacklistToken(decoded, decoded.sub);
       res.json({ message: 'Logged out successfully' });
     } catch (err) {
 			res.status(400).json({ message: 'Invalid token' });
@@ -143,7 +143,6 @@ export async function getUser(req, res) {
 		if (!user) {
 			return res.status(404).json({ error: "User not found" });
 		}
-		console.log(user);
 		return res.json(user);
 	} catch (error) {
 		res.status(500).json({ error: "Failed to retrieve user" });

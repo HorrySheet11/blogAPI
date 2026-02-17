@@ -7,12 +7,13 @@ import { AuthContext } from "../context/AuthContext.jsx";
 import API from "../utils/api.js";
 
 function Header() {
-	const { user, loading, setUser } = useContext(AuthContext);
+	const { user, setUser, loading, setLoading} = useContext(AuthContext);
 	const nav = useNavigate();
 	const dialogRef = useRef(null);
 
 	//* get user if existing token
 	if (!user && localStorage.getItem("token")) {
+		setLoading(true);
 		const decoded = jwtDecode(localStorage.getItem("token"));
 		const id = decoded.sub;
 		async function getUser(id) {
@@ -25,17 +26,17 @@ function Header() {
 			return;
 		}
 		getUser(id);
+		setLoading(false);
 	}
 
 	const logout = async () => {
 		try {
 			console.log(user);
-			const response = await API.get(`/user/log-out`);
-			setUser(null);
+			const response = await API.post(`/user/log-out`);
 			alert("Logged out successfully!");
 			nav("/");
-			openModal;
 			localStorage.removeItem("token");
+			setUser(null);
 			return;
 		} catch (error) {
 			console.log(error);
@@ -50,6 +51,8 @@ function Header() {
 			<div className="header">
 				<h2>Horry Blog</h2>
 				{user && <h3>Welcome {user.name}</h3>}
+				{/* TODO: implement loading */}
+				{loading && <h3>Loading...</h3>}
 				<ul>
 					<li>
 						<button type="button" onClick={() => nav("/")}>

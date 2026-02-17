@@ -5,7 +5,7 @@ import { useState,useContext } from 'react';
 import './LogIn.css'
 
 function LogIn({closeModal}){
-  const {user,setUser} = useContext(AuthContext);
+  const {setLoading, setUser} = useContext(AuthContext);
   const nav = useNavigate();
   const [logInData, setLogInData] = useState({
     email: "",
@@ -21,6 +21,7 @@ function LogIn({closeModal}){
 	};
 
 	const handleSubmit = async (e) => {
+    setLoading(true);
     e.preventDefault();
     console.log(logInData);
 		try {
@@ -41,6 +42,7 @@ function LogIn({closeModal}){
 			console.error("Error logging in:", error);
 			alert("Log in failed.");
 		}
+    setLoading(false)
     return;
 	};
 
