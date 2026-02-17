@@ -59,11 +59,11 @@ model JwtBlacklist {
   id         Int      @id @default(autoincrement())
   jti        String   @unique            // JWT ID from token payload
   revokedAt  DateTime @default(now())   // When it was revoked
-  expiresAt  DateTime                   // Token expiry for cleanup
+  expiresIn  DateTime                   // Token expiry for cleanup
 
   user    User  @relation(fields: [userId], references: [id])
   userId  Int                       // Optional: track which user it belongs to
 
   @@index([jti])
-  @@index([expiresAt])
+  @@index([expiresIn])
 }

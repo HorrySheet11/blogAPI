@@ -23,7 +23,7 @@ function LogIn({closeModal}){
 	const handleSubmit = async (e) => {
     setLoading(true);
     e.preventDefault();
-    console.log(logInData);
+    // console.log(logInData);
 		try {
 			const response = await API.post(`/user/log-in`, logInData, {
 				headers: {
@@ -35,7 +35,7 @@ function LogIn({closeModal}){
       setUser(data.user);
       localStorage.setItem('token', data.accessToken);
 			alert("Logged in successfully!");
-      console.log("Server Response:", data);
+      // console.log("Server Response:", data);
       closeModal();
       nav("/");
 		} catch (error) {
@@ -54,10 +54,10 @@ function LogIn({closeModal}){
       <h2>Log In</h2>
       <form onSubmit={handleSubmit}>
         <label>Email: <br /><input type="email" name="email" value={logInData.email}
-						onChange={handleChange}
+						onChange={(e) => handleChange(e)}
 						require='true'/></label>
         <label>Password: <br /><input type="password" name="password" value={logInData.password}
-						onChange={handleChange}
+						onChange={(e) => handleChange(e)}
 						require='true' /></label>
         <div>
           <button type="submit">Log In</button>

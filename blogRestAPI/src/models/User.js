@@ -31,23 +31,9 @@ export async function saveRefreshToken(id, token) {
 	return;
 }
 
-export async function findTokenByJti(jti) {
-	return await prisma.tokens.findUnique({
-		where: {
-			jti: jti,
-		},
-	});
-}
 
-export async function blacklistToken(token,id) {
-	return await prisma.jwtBlacklist.create({
-		data: {
-			jti,
-			userId: id,
-			expiresAt: token.expiresIn,
-		},
-	});
-}
+
+
 
 export async function findUserById(id){
   return await prisma.user.findUnique({

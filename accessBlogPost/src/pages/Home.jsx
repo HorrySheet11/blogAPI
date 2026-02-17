@@ -7,7 +7,7 @@ import { AuthContext } from "../context/AuthContext.jsx";
 
 
 function Home() {
-	const { user, loading } = useContext(AuthContext);
+	const { user } = useContext(AuthContext);
 	const [posts, setPosts] = useState([]);
 	const nav = useNavigate();
 

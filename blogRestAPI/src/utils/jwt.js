@@ -13,11 +13,13 @@ export function generateAccessToken(user) {
     {
       sub: user.id,
       email: user.email,
+      jti: uuidv4(),
     },
     JWT_SECRET,
     {
       expiresIn: ACCESS_TOKEN_EXPIRY,
       algorithm: 'HS256',
+      
     }
   );
 }
@@ -27,6 +29,7 @@ export function generateRefreshToken(user) {
     {
       sub: user.id,
       type: 'refresh',
+      jti: uuidv4(),
     },
     JWT_SECRET,
     {
@@ -48,7 +51,7 @@ export function generateTokenPair(user) {
   return {
     accessToken: generateAccessToken(user),
     refreshToken: generateRefreshToken(user),
-    expiresIn: 900, // 15 minutes in seconds
-    jti: uuidv4()
+    expiresIn: 900, 
+    
   };
 }

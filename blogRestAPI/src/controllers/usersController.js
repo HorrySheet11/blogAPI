@@ -1,15 +1,15 @@
 import bcrypt from "bcryptjs";
 import passport from "passport";
+import { blacklistToken } from "../models/Token.js";
 import {
 	createUser,
 	findUserByEmail,
-	saveRefreshToken,
-	findTokenByJti,
 	findUserById,
-
+	saveRefreshToken,
 } from "../models/User.js";
 import { generateTokenPair, verifyToken } from "../utils/jwt.js";
 import { enhanceConsoleLog } from "../utils/log.js";
+import jwt from "jsonwebtoken";
 
 enhanceConsoleLog();
 
@@ -18,9 +18,7 @@ export function login(req, res, next) {
 		"local",
 		{ session: false },
 		async (err, user, info) => {
-			if (err) {
-				return res.status(500).json({ error: "Authentication error" });
-			}
+			if (err) return res.status(500).json({ error: "Authentication error" });
 			if (!user) {
 				return res
 					.status(401)
@@ -41,23 +39,25 @@ export function login(req, res, next) {
 	)(req, res, next);
 }
 //TODO:  manage logout token
-export function logout(req, res) {
-	passport.authenticate('jwt', { session: false }),
-  async (req, res) => {
-    try {
-      const authHeader = req.headers.authorization;
-      if (!authHeader) return res.json({ message: 'No token provided' }).status(400);
-
-      const token = authHeader.split(' ')[1];
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-      // Add token's jti to blacklist
-      await blacklistToken(decoded, decoded.sub);
-      res.json({ message: 'Logged out successfully' });
-    } catch (err) {
-			res.status(400).json({ message: 'Invalid token' });
-    }
-  }}
+export async function logout(req, res) {
+	// passport.authenticate("jwt", { session: false })
+	try {
+		const authHeader = req.headers.authorization;
+		if (!authHeader) {
+			return res.status(400).json({ message: "No token provided" });
+		}
+		const token = authHeader.split(" ")[1];
+		const decoded = jwt.decode(token, process.env.JWT_SECRET);
+		console.log(decoded);
+		//* Add token's jti to blacklist
+		await blacklistToken(decoded, decoded.sub);
+		res.status(200).json({ message: "Logged out successfully" });
+	} catch (err) {
+		console.log(err);
+		res.status(400).json({ message: "Invalid token" });
+	}
+	res.end();
+}
 
 export async function signUp(req, res) {
 	console.log(req.body);
@@ -147,5 +147,4 @@ export async function getUser(req, res) {
 	} catch (error) {
 		res.status(500).json({ error: "Failed to retrieve user" });
 	}
-	
 }

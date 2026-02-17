@@ -1,4 +1,4 @@
-import { useContext, useRef } from "react";
+import { useContext, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Header.css";
 import { jwtDecode } from "jwt-decode";
@@ -12,28 +12,29 @@ function Header() {
 	const dialogRef = useRef(null);
 
 	//* get user if existing token
-	if (!user && localStorage.getItem("token")) {
-		setLoading(true);
-		const decoded = jwtDecode(localStorage.getItem("token"));
-		const id = decoded.sub;
-		async function getUser(id) {
-			try {
-				const response = await API.get(`/user/${id}`);
-				setUser(response.data);
-			} catch (error) {
-				console.log(error);
+	useEffect(()=>{
+		if (!user && localStorage.getItem("token")) {
+			const decoded = jwtDecode(localStorage.getItem("token"));
+			async function getUser(id) {
+				setLoading(true);
+				try {
+					const response = await API.get(`/user/${id}`);
+					setUser(response.data);
+				} catch (error) {
+					console.log(error);
+				}
+				return;
 			}
-			return;
+			getUser(decoded.sub);
+			setLoading(false);
 		}
-		getUser(id);
-		setLoading(false);
-	}
+	},[setLoading, setUser, user])
 
 	const logout = async () => {
 		try {
 			console.log(user);
 			const response = await API.post(`/user/log-out`);
-			alert("Logged out successfully!");
+			alert(response.data.message);
 			nav("/");
 			localStorage.removeItem("token");
 			setUser(null);
@@ -51,7 +52,6 @@ function Header() {
 			<div className="header">
 				<h2>Horry Blog</h2>
 				{user && <h3>Welcome {user.name}</h3>}
-				{/* TODO: implement loading */}
 				{loading && <h3>Loading...</h3>}
 				<ul>
 					<li>
