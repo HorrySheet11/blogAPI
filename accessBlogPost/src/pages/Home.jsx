@@ -1,10 +1,9 @@
-import API from '../utils/api.js';
 import { useContext, useEffect, useState } from "react";
 import Header from "../components/Header";
+import API from "../utils/api.js";
 import "./Home.css";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext.jsx";
-
 
 function Home() {
 	const { user } = useContext(AuthContext);
@@ -13,8 +12,12 @@ function Home() {
 
 	useEffect(() => {
 		// try {
-		const response = API.get(`/post`);
-		setPosts(response.data);
+		async function getAllPosts() {
+			const response = await API.get(`/post`);
+			console.log(response.data);
+			setPosts(response.data);
+		}
+		getAllPosts();
 		// } catch (error) {
 		// 	console.log(error);
 		// }
@@ -30,7 +33,8 @@ function Home() {
 			<Header />
 			{!user && <h2>Not logged in</h2>}
 			<div id="blog">
-				<ul>{/* FIXME: cannot read length */}
+				<ul>
+					{/* FIXME: cannot read length */}
 					{!posts ? (
 						<h3>No posts</h3>
 					) : (

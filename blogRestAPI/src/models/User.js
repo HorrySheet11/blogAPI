@@ -4,8 +4,6 @@ export async function getAllUsers() {
 	return await prisma.user.findMany();
 }
 
-//TODO: make all other functions
-
 export async function createUser(user) {
 	return await prisma.user.create({
 		data: user,
@@ -31,7 +29,21 @@ export async function saveRefreshToken(id, token) {
 	return;
 }
 
-
+export async function findBlogById(id){
+	return await prisma.blog.findUnique({
+		where: {
+			id: parseInt(id, 10),
+		},
+		include: {
+			author: {
+				select: {
+					id: true,
+					name: true
+				}
+			}
+		}
+	})
+}
 
 
 

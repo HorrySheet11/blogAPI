@@ -6,6 +6,7 @@ import {
 	findUserByEmail,
 	findUserById,
 	saveRefreshToken,
+	findBlogById
 } from "../models/User.js";
 import { generateTokenPair, verifyToken } from "../utils/jwt.js";
 import { enhanceConsoleLog } from "../utils/log.js";
@@ -146,5 +147,18 @@ export async function getUser(req, res) {
 		return res.json(user);
 	} catch (error) {
 		res.status(500).json({ error: "Failed to retrieve user" });
+	}
+}
+
+export async function getBlogAuthor(req, res) {
+	try {
+		const blogId = req.params.id;
+		const blog = await findBlogById(blogId);
+		if (!blog) {
+			return res.status(404).json({ error: "Blog not found" });
+		}
+		return res.json(blog);
+	} catch (error) {
+		res.status(500).json({ error: "Failed to retrieve blog" });
 	}
 }

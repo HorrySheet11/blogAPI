@@ -7,5 +7,6 @@ userRouter.post('/log-out', userController.logout);
 userRouter.post('/sign-up',  userController.signUp);
 userRouter.get('refresh', userController.refreshToken);
 userRouter.get('/:id', userController.getUser);
+userRouter.get('/blog/:id', userController.getBlogAuthor);
 
 export default userRouter;
