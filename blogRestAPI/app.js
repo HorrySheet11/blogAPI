@@ -4,10 +4,19 @@ import cors from 'cors'
 import routes from './src/routers/index.js';
 import passport from 'passport';
 import "./src/config/passport.js";
+import bodyParser from 'body-parser';
 
-
+//FIXME: req.body is undefined
 const app = express();
-app.use(express.json());
+app.use((req, res, next) => {
+  express.json()(req, res, (err) => {
+    if (!req.body) req.body = {};
+    next(err);
+  });
+}); 
+
+app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(passport.initialize());
 

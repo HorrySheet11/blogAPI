@@ -37,7 +37,8 @@ model Post {
   id          Int     @id @default(autoincrement())
   title       String
   content     String
-  dateCreated DateTime @default(now())
+  dateCreated DateTime  @default(now())
+  isPublished Boolean   @default(false)
   
   blog      Blog   @relation(fields: [blogId], references: [id])
   blogId    Int

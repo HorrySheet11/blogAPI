@@ -11,16 +11,15 @@ function Home() {
 	const nav = useNavigate();
 
 	useEffect(() => {
-		// try {
+		try {
 		async function getAllPosts() {
 			const response = await API.get(`/post`);
-			console.log(response.data);
 			setPosts(response.data);
 		}
 		getAllPosts();
-		// } catch (error) {
-		// 	console.log(error);
-		// }
+		} catch (error) {
+			console.log(error);
+		}
 	}, []);
 
 	const goToPost = (id) => {
@@ -34,7 +33,6 @@ function Home() {
 			{!user && <h2>Not logged in</h2>}
 			<div id="blog">
 				<ul>
-					{/* FIXME: cannot read length */}
 					{!posts ? (
 						<h3>No posts</h3>
 					) : (

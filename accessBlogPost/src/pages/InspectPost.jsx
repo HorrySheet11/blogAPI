@@ -6,31 +6,33 @@ import "./InspectPost.css";
 
 function InspectPost() {
 	const [postData, setPostData] = useState(null);
-  const [postAuthor, setPostAuthor] = useState(null);
+	const [postAuthor, setPostAuthor] = useState(null);
 	const [loading, setLoading] = useState(true);
 	const { id } = useParams();
 	const nav = useNavigate();
-  const blogId = postData?.blogId;
+	const blogId = postData?.blogId;
 
 	useEffect(() => {
-    async function getAuthorFromBlog(id){
-      const response = await API.get(`/user/blog/${id}`);
-        console.log(response.data);
-        setPostAuthor(response.data.author);
-    }
 		async function getPost(id) {
 			const response = await API.get(`/post/${id}`);
-			console.log(response.data);
 			setPostData(response.data);
 		}
 		try {
 			getPost(id);
-      getAuthorFromBlog(blogId);
 		} catch (error) {
 			console.log(error);
 		}
-    setLoading(false);
-	}, [id,blogId]);
+		setLoading(false);
+	}, [id]);
+
+  useEffect(()=>{
+    async function getAuthorFromBlog(id) {
+			const response = await API.get(`/user/blog/${id}`);
+			console.log(response.data);
+			setPostAuthor(response.data.author);
+		}
+    getAuthorFromBlog(blogId)
+  },[blogId])
 
 	return (
 		<div>

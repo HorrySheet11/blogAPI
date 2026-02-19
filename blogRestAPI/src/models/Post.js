@@ -11,3 +11,18 @@ export async function findPostById(id) {
 export async function findAllPosts() {
   return await prisma.post.findMany();
 }
+
+export async function createPost(title, content, isPublished, blogId) {
+  return await prisma.post.create({
+    data: {
+      title: title,
+      content: content,
+      isPublished: isPublished,
+      blog: {
+        connect: {
+          id: blogId,
+        },
+      },
+    },
+  });
+}
