@@ -11,9 +11,9 @@ export async function allPosts(req,res){
 }
 
 export async function addPost(req,res){
-  console.log(req.body);
+  console.log(req.body.postData);
   try {
-    const { title, content, isPublished, blogId } = req.body;
+    const { title, content, isPublished, blogId } = req.body.postData;
     const result = await createPost(title, content, isPublished, blogId);
     res.json(result);
     

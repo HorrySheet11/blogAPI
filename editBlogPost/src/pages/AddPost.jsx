@@ -1,26 +1,48 @@
+// import { Editor } from "@tinymce/tinymce-react";
 import { Editor } from "@tinymce/tinymce-react";
-import { useState, useRef } from "react";
-import API from '../utils/api.js';
+import { useRef, useState } from "react";
+import API from "../utils/api.js";
 
 function addPost() {
-	const [title, setTitle] = useState("");
-	const [content, setContent] = useState("");
 	const editorRef = useRef(null);
 
-	const handleTitleChange = (event) => {
-		setTitle(event.target.value);
+	const [postData, setPostData] = useState({
+		title: "",
+		content: "Enter post content here.",
+		isPublished: false,
+		blogId: 1,
+	});
+	const handleChange = (event) => {
+		setPostData({
+			...postData,
+			[event.target.name]: event.target.value,
+		});
 	};
 
-	const handleSubmit = (event) => {
+	const handleContentChange = () => {
 		const editorContent = editorRef.current.getContent();
+		setPostData({
+			...postData,
+			content: editorContent,
+		});
+	};
+
+	const handleSubmit = async (event) => {
+		event.preventDefault();
 		try {
-			const response = API.post(`/post/add`,
-				, { title, editorContent });
+			const response = await API.post(`/post/add`, { postData }, {
+				headers: {
+					"Content-Type": "application/json",
+				},
+			});
 			console.log(response);
+			alert("Post added successfully");
 		} catch (error) {
-			console.log(error)
+			console.log(error);
+			return;
 		}
-		setContent(event.target.value);
+		// window.location.href = `${import.meta.env.VITE_ACCESS_BLOG}/blog`;
+		return;
 	};
 
 	const log = () => {
@@ -32,29 +54,31 @@ function addPost() {
 	return (
 		<div>
 			<h1>Add New Post</h1>
-			<form>
+			<form onSubmit={handleSubmit}>
 				<label>
 					Title: <br />
-					<input type="text" value={title} onChange={handleTitleChange} />
+					<input
+						type="text"
+						value={postData.title}
+						name="title"
+						onChange={handleChange}
+					/>
 				</label>
 				<br />
-				<label htmlFor='editor'>
+				<label htmlFor="editor">
 					Content:
 					{/* <textarea value={content} onChange={handleContentChange} /> */}
-					<Editor id='editor'
-						apiKey='fs1217l0slezwnzgyvtz6c5myup04fc87y1wrnvq079e8e5o'
+					<Editor
+						id="editor"
+						apiKey="fs1217l0slezwnzgyvtz6c5myup04fc87y1wrnvq079e8e5o"
 						onInit={(evt, editor) => {
 							editorRef.current = editor;
 						}}
-						initialValue="This is the initial content of the editor."
+						onChange={handleContentChange}
+						value={postData.content}
 						init={{
 							height: 500,
 							menubar: false,
-							plugins: [
-								"advlist autolink lists link image charmap print preview anchor",
-								"searchreplace visualblocks code fullscreen",
-								"insertdatetime media table paste code help wordcount",
-							],
 							toolbar:
 								"undo redo | formatselect | " +
 								"bold italic backcolor | alignleft aligncenter " +
@@ -65,7 +89,16 @@ function addPost() {
 						}}
 					/>
 				</label>
-        <button type="button" onClick={log}>Log editor content</button>
+				<label htmlFor="published">Publish now? 
+					<input
+						type="checkbox"
+						name="published"
+						id="published"
+						onChange={() =>
+							setPostData({ ...postData, isPublished: !postData.isPublished })
+						}
+					/>
+				</label>
 				<br />
 				<button type="submit">Save</button>
 			</form>

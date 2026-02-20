@@ -75,9 +75,11 @@ function Header() {
 					) : (
 						<>
 							<li>
-								<button type="button" onClick={() => nav("/post/create")}>
-									New Post
-								</button>
+								<a href={`${import.meta.env.VITE_EDIT_POST_URL}/post/add`} >
+									<button type="button" >
+										New Post
+									</button>
+								</a>
 							</li>
 							<li>
 								<button type="button" onClick={logout}>
