@@ -40,7 +40,7 @@ function addPost() {
 			console.log(error);
 			return;
 		}
-		// window.location.href = `${import.meta.env.VITE_ACCESS_BLOG}/blog`;
+		window.location.href = `${import.meta.env.VITE_ACCESS_BLOG}`;
 		return;
 	};
 

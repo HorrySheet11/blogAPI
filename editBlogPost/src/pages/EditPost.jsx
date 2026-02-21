@@ -57,6 +57,7 @@ function editPost() {
 			console.log(error);
       return;
 		}
+    window.location.href = `${import.meta.env.VITE_ACCESS_BLOG}`;
     return;
 	};
 

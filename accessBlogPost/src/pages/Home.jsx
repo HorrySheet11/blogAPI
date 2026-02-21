@@ -22,6 +22,10 @@ function Home() {
 		}
 	}, []);
 
+	useEffect(()=>{
+		console.log(posts);
+	},[posts])
+
 	const goToPost = (id) => {
 		return () => {
 			nav(`/post/${id}`);
@@ -41,8 +45,7 @@ function Home() {
 								<li key={post.id} className="post">
 									<button type="button" onClick={goToPost(post.id)}>
 										<h2>{post.title}</h2>
-										<h4>By: {post.user}</h4>
-										<p>{post.content}</p>
+										<h4>By: {post.blog.authorName}</h4>
 									</button>
 								</li>
 							);

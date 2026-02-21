@@ -34,6 +34,9 @@ export async function updatePost(req,res){
   } catch (error) {
         console.log(error);
     res.status(500).json({ error: "Failed to add post" });
-
   }
+}
+
+export async function goToAddPost(req,res){
+  res.redirect("https://localhost:3000/post/add");
 }

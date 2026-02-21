@@ -9,7 +9,15 @@ export async function findPostById(id) {
 }
 
 export async function findAllPosts() {
-  return await prisma.post.findMany();
+  return await prisma.post.findMany({
+    include: {
+      blog: {
+        include: {
+          author: true
+        }
+      },
+    }
+  });
 }
 
 export async function createPost(title, content, isPublished, blogId) {

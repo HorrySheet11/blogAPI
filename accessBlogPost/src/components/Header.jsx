@@ -1,4 +1,4 @@
-import { useContext, useRef, useEffect } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Header.css";
 import { jwtDecode } from "jwt-decode";
@@ -7,14 +7,15 @@ import { AuthContext } from "../context/AuthContext.jsx";
 import API from "../utils/api.js";
 
 function Header() {
-	const { user, setUser, loading, setLoading} = useContext(AuthContext);
+	const { user, setUser, loading, setLoading } = useContext(AuthContext);
 	const nav = useNavigate();
 	const dialogRef = useRef(null);
+	let decoded = "";
 
 	//* get user if existing token
-	useEffect(()=>{
+	useEffect(() => {
 		if (!user && localStorage.getItem("token")) {
-			const decoded = jwtDecode(localStorage.getItem("token"));
+			decoded = jwtDecode(localStorage.getItem("token"));
 			async function getUser(id) {
 				setLoading(true);
 				try {
@@ -28,7 +29,7 @@ function Header() {
 			getUser(decoded.sub);
 			setLoading(false);
 		}
-	},[setLoading, setUser, user])
+	}, [setLoading, setUser, user, decoded.sub]);
 
 	const logout = async () => {
 		try {
@@ -46,6 +47,23 @@ function Header() {
 
 	const openModal = () => dialogRef.current?.showModal();
 	const closeModal = () => dialogRef.current?.close();
+
+	//* --go to add/edit post--
+	//* get token jti and pass to url
+	//* on add/edit post get jti and get token based on jti
+	//* if no then go back to home
+	async function goToAddPost() {
+		try {
+			const response = await API.post(`/user/managePost`);
+			window.location = `${import.meta.env.VITE_EDIT_POST_URL}/post/add/?tkn=${response.data[0].jti}`;
+		} catch (error) {
+			console.log(error);
+		}
+	}
+
+	useEffect(() => {
+		console.log(decoded)
+	}, [decoded]);
 
 	return (
 		<>
@@ -75,11 +93,9 @@ function Header() {
 					) : (
 						<>
 							<li>
-								<a href={`${import.meta.env.VITE_EDIT_POST_URL}/post/add`} >
-									<button type="button" >
-										New Post
-									</button>
-								</a>
+								<button type="button" onClick={goToAddPost}>
+									New Post
+								</button>
 							</li>
 							<li>
 								<button type="button" onClick={logout}>

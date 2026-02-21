@@ -39,7 +39,6 @@ export function login(req, res, next) {
 		},
 	)(req, res, next);
 }
-//TODO:  manage logout token
 export async function logout(req, res) {
 	// passport.authenticate("jwt", { session: false })
 	try {
@@ -88,7 +87,6 @@ export async function signUp(req, res) {
 			email: email.toLowerCase(),
 			password: hashedPassword,
 			name,
-			//FIXME: fix autocreate blog on user create
 			blog: {
 				create: { authorName: name },
 			},
@@ -160,5 +158,13 @@ export async function getBlogAuthor(req, res) {
 		return res.json(blog);
 	} catch (error) {
 		res.status(500).json({ error: "Failed to retrieve blog" });
+	}
+}
+
+export async function addTokenData(req,res){
+	try {
+		
+	} catch (err) {
+		
 	}
 }
