@@ -24,6 +24,7 @@ export async function addPost(req,res){
 }
 
 export async function updatePost(req,res){
+  console.log(req.body.postData);
   const {id} = req.params;
   try {
     const { title, content, isPublished, blogId } = req.body.postData;

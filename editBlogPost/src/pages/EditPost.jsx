@@ -4,13 +4,7 @@ import { useSearchParams } from "react-router-dom";
 import API from "../utils/api.js";
 
 function editPost() {
-	const [postData, setPostData] = useState({
-    title: "",
-    content: "",
-    isPublished: false,
-    blogId: null,
-    id: 0,
-  });
+	const [postData, setPostData] = useState(null);
 	const editorRef = useRef(null);
 	const [searchParams, setSearchParams] = useSearchParams();
 
@@ -18,17 +12,17 @@ function editPost() {
 
 	useEffect(() => {
 		console.log(id);
-		const getPost = async (id) => {
+		async function getPost(id) {
 			const response = await API.get(`/post/${id}`);
-			console.log(response.data);
 			setPostData(response.data);
-		};
+		}
 		try {
 			getPost(id);
+      console.log(postData);
 		} catch (error) {
 			console.log(error);
 		}
-	},[]);
+	}, [id]);
 
 	const handleChange = (event) => {
 		setPostData({
@@ -43,21 +37,30 @@ function editPost() {
 			...postData,
 			content: editorContent,
 		});
+		console.log(postData);
 	};
 
-	const handleSubmit = () => {
-    console.log(postData)
+	const handleSubmit = async (e) => {
+    e.preventDefault();
+		console.log(postData);
 		try {
-			const response = API.put(`/post/update/${id}`, {
-				headers: {
-					"Content-Type": "application/json",
-				},
-			},  postData);
-      alert(response.data.message);    
+			const response = await API.put(
+				`/post/update/${id}`, {postData},
+				{
+					headers: {
+						"Content-Type": "application/json",
+					},
+				}
+			);
+			alert(response.data.message);
 		} catch (error) {
 			console.log(error);
+      return;
 		}
+    return;
 	};
+
+
 	return (
 		<form onSubmit={handleSubmit}>
 			<label>
@@ -99,6 +102,7 @@ function editPost() {
 					type="checkbox"
 					name="published"
 					id="published"
+          checked={postData?.isPublished}
 					onChange={() =>
 						setPostData({ ...postData, isPublished: !postData.isPublished })
 					}
