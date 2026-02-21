@@ -1,4 +1,4 @@
-import {findPostById,findAllPosts,createPost } from "../models/Post.js";
+import {findPostById,findAllPosts,createPost, reformPost } from "../models/Post.js";
 
 export async function inspectPost(req,res){
   const result = await findPostById(parseInt(req.params.id, 10));
@@ -20,5 +20,19 @@ export async function addPost(req,res){
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Failed to add post" });
+  }
+}
+
+export async function updatePost(req,res){
+  const {id} = req.params;
+  try {
+    const { title, content, isPublished, blogId } = req.body.postData;
+    console.log( title, content, isPublished, blogId, id )
+    const result = await reformPost(title, content, isPublished, blogId, id);
+    res.json(result);
+  } catch (error) {
+        console.log(error);
+    res.status(500).json({ error: "Failed to add post" });
+
   }
 }

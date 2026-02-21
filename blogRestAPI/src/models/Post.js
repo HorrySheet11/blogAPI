@@ -26,3 +26,21 @@ export async function createPost(title, content, isPublished, blogId) {
     },
   });
 }
+
+export async function reformPost(title, content, isPublished, blogId, id) {
+  return await prisma.post.update({
+    where: {
+      id: parseInt(id, 10),
+    },
+    data: {
+      title: title,
+      content: content,
+      isPublished: isPublished,
+      blog: {
+        connect: {
+          id: parseInt(blogId, 10),
+        },
+      },
+    },
+  })
+}

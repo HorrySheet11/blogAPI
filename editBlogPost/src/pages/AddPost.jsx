@@ -1,17 +1,16 @@
-// import { Editor } from "@tinymce/tinymce-react";
 import { Editor } from "@tinymce/tinymce-react";
 import { useRef, useState } from "react";
 import API from "../utils/api.js";
 
 function addPost() {
-	const editorRef = useRef(null);
-
 	const [postData, setPostData] = useState({
 		title: "",
 		content: "Enter post content here.",
 		isPublished: false,
 		blogId: 1,
 	});
+	const editorRef = useRef(null);
+
 	const handleChange = (event) => {
 		setPostData({
 			...postData,
@@ -45,14 +44,9 @@ function addPost() {
 		return;
 	};
 
-	const log = () => {
-		if (editorRef.current) {
-			const editorContent = editorRef.current.getContent();
-		}
-	};
 
 	return (
-		<div>
+		<>
 			<h1>Add New Post</h1>
 			<form onSubmit={handleSubmit}>
 				<label>
@@ -67,14 +61,13 @@ function addPost() {
 				<br />
 				<label htmlFor="editor">
 					Content:
-					{/* <textarea value={content} onChange={handleContentChange} /> */}
 					<Editor
 						id="editor"
 						apiKey="fs1217l0slezwnzgyvtz6c5myup04fc87y1wrnvq079e8e5o"
 						onInit={(evt, editor) => {
 							editorRef.current = editor;
 						}}
-						onChange={handleContentChange}
+						onEditorChange={handleContentChange}
 						value={postData.content}
 						init={{
 							height: 500,
@@ -102,7 +95,7 @@ function addPost() {
 				<br />
 				<button type="submit">Save</button>
 			</form>
-		</div>
+		</>
 	);
 }
 
