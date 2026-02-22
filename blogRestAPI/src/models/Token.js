@@ -18,3 +18,21 @@ export async function blacklistToken(token,id) {
     },
   });
 }
+
+export async function addTokenInfo(token, jti){
+  return await prisma.managePostInfo.create({
+    data:{
+			token: token,
+			uuid: jti
+		}
+  })
+}
+
+export async function validateTokenInfo(jti){
+	return await prisma.managePostInfo.findFirst({
+		where: {
+			uuid: jti
+		}
+		
+	})
+}

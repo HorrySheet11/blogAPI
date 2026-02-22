@@ -22,10 +22,6 @@ function Home() {
 		}
 	}, []);
 
-	useEffect(()=>{
-		console.log(posts);
-	},[posts])
-
 	const goToPost = (id) => {
 		return () => {
 			nav(`/post/${id}`);

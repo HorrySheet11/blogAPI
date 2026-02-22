@@ -1,5 +1,6 @@
 import { Editor } from "@tinymce/tinymce-react";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import API from "../utils/api.js";
 
 function addPost() {
@@ -10,6 +11,30 @@ function addPost() {
 		blogId: 1,
 	});
 	const editorRef = useRef(null);
+	const [searchParams, setSearchParams] = useSearchParams();
+
+	const jti = searchParams.get("tkn");
+
+	useEffect(()=>{
+		if(!jti){
+			window.location.href = `${import.meta.env.VITE_ACCESS_BLOG}`;
+		}
+		async function validateJTI(jti){
+			try {
+				const response = await API.get(`/user/validate/${jti}`);
+				if(!response.data){
+					alert('Invalid token');
+					window.location.href = `${import.meta.env.VITE_ACCESS_BLOG}`;
+				}
+				localStorage.setItem('token', response.data.token);
+				console.log(response);
+				console.log('token set');
+			} catch (error) {
+				console.log(error);
+			}
+		}
+		validateJTI(jti);
+	},[jti])
 
 	const handleChange = (event) => {
 		setPostData({

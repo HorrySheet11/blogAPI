@@ -9,5 +9,6 @@ userRouter.get('/refresh', userController.refreshToken);
 userRouter.get('/:id', userController.getUser);
 userRouter.get('/blog/:id', userController.getBlogAuthor);
 userRouter.post('/managePost', userController.addTokenData);
+userRouter.get('/validate/:jti', userController.validateToken);
 
 export default userRouter;

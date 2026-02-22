@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Header.css";
 import { jwtDecode } from "jwt-decode";
@@ -10,12 +10,12 @@ function Header() {
 	const { user, setUser, loading, setLoading } = useContext(AuthContext);
 	const nav = useNavigate();
 	const dialogRef = useRef(null);
-	let decoded = "";
+	const  [decoded, setDecoded] = useState({});
 
 	//* get user if existing token
 	useEffect(() => {
 		if (!user && localStorage.getItem("token")) {
-			decoded = jwtDecode(localStorage.getItem("token"));
+			setDecoded(jwtDecode(localStorage.getItem("token")));
 			async function getUser(id) {
 				setLoading(true);
 				try {
@@ -30,6 +30,10 @@ function Header() {
 			setLoading(false);
 		}
 	}, [setLoading, setUser, user, decoded.sub]);
+
+	useEffect(() => {
+		console.log(decoded);
+	}, [decoded]);
 
 	const logout = async () => {
 		try {
@@ -53,17 +57,19 @@ function Header() {
 	//* on add/edit post get jti and get token based on jti
 	//* if no then go back to home
 	async function goToAddPost() {
+		const data = { jti: decoded.jti ,
+			token: localStorage.getItem("token"), 
+			};
+			console.log(data)
 		try {
-			const response = await API.post(`/user/managePost`);
-			window.location = `${import.meta.env.VITE_EDIT_POST_URL}/post/add/?tkn=${response.data[0].jti}`;
+			const response = await API.post(`/user/managePost`, data, {
+				headers: { "Content-Type": "application/json" },
+			});
+			window.location = `${import.meta.env.VITE_EDIT_POST_URL}/post/add/?tkn=${decoded.jti}`;
 		} catch (error) {
 			console.log(error);
 		}
 	}
-
-	useEffect(() => {
-		console.log(decoded)
-	}, [decoded]);
 
 	return (
 		<>

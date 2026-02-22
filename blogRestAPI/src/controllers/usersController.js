@@ -1,16 +1,20 @@
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 import passport from "passport";
-import { blacklistToken } from "../models/Token.js";
+import {
+	addTokenInfo,
+	blacklistToken,
+	validateTokenInfo,
+} from "../models/Token.js";
 import {
 	createUser,
+	findBlogById,
 	findUserByEmail,
 	findUserById,
 	saveRefreshToken,
-	findBlogById
 } from "../models/User.js";
 import { generateTokenPair, verifyToken } from "../utils/jwt.js";
 import { enhanceConsoleLog } from "../utils/log.js";
-import jwt from "jsonwebtoken";
 
 enhanceConsoleLog();
 
@@ -161,10 +165,27 @@ export async function getBlogAuthor(req, res) {
 	}
 }
 
-export async function addTokenData(req,res){
+export async function addTokenData(req, res) {
+	console.log(req.body)
 	try {
-		
+		const token = req.body.token;
+		const jti = req.body.jti;
+		const addToken = await addTokenInfo(token, jti);
+		if (!addToken) {
+			return res.status(404).json({ error: "Token not found" });
+		}
+		return res.json(addToken);
 	} catch (err) {
-		
+		res.status(500).json({ error: "Error adding token info" });
+	}
+}
+
+export async function validateToken(req, res) {
+	try {
+		const {jti} = req.params;
+		const checkToken = await validateTokenInfo(jti);
+		return res.json(checkToken);
+	} catch (err) {
+		res.status(500).json({ error: "Error validating token info" });
 	}
 }
