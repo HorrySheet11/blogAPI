@@ -1,16 +1,17 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Header from "../components/Header";
+import { AuthContext } from "../context/AuthContext.jsx";
 import API from "../utils/api.js";
 import "./InspectPost.css";
 
 function InspectPost() {
 	const [postData, setPostData] = useState(null);
-	const [postAuthor, setPostAuthor] = useState(null);
 	const [loading, setLoading] = useState(true);
 	const { id } = useParams();
 	const nav = useNavigate();
-	const blogId = postData?.blogId;
+	const { user } = useContext(AuthContext);
+	const [edit, setEdit] = useState(false)
 
 	useEffect(() => {
 		async function getPost(id) {
@@ -25,14 +26,11 @@ function InspectPost() {
 		setLoading(false);
 	}, [id]);
 
-  useEffect(()=>{
-    async function getAuthorFromBlog(id) {
-			const response = await API.get(`/user/blog/${id}`);
-			console.log(response.data);
-			setPostAuthor(response.data.author);
-		}
-    getAuthorFromBlog(blogId)
-  },[blogId])
+
+	//TODO: show edit button if user.sub == postdata.blog.authorid
+	useEffect(()=>{
+		setEdit(user?.id  === postData?.blog?.authorId);
+	},[user,postData])
 
 	return (
 		<div>
@@ -42,7 +40,11 @@ function InspectPost() {
 			) : (
 				<>
 					<h1>{postData?.title}</h1>
-					<p>Author: {postAuthor?.name}</p>
+
+					{edit === true ? (
+						<button type="button">Edit</button>
+					): <p>Author: {postData?.blog.authorName}</p>}
+
 					<h4>{postData?.content}</h4>
 					<button type="button" onClick={() => nav("/")}>
 						Back

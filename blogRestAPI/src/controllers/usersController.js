@@ -135,7 +135,7 @@ export async function refreshToken(req, res) {
 
 		res.json(tokens);
 	} catch (error) {
-		res.status(401).json({ error: "Token refresh failed" });
+		res.status(500).json({ error: "Token refresh failed" });
 	}
 }
 

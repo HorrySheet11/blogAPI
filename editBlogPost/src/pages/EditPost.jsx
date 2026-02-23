@@ -24,6 +24,10 @@ function editPost() {
 		}
 	}, [id]);
 
+  useEffect(()=>{
+    console.log(postData);
+  },[])
+
 	const handleChange = (event) => {
 		setPostData({
 			...postData,

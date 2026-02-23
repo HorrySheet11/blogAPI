@@ -5,6 +5,13 @@ export async function findPostById(id) {
     where: {
       id: parseInt(id, 10),
     },
+    include: {
+      blog: {
+        include: {
+          author: true
+        }
+      },
+    }
   });
 }
 

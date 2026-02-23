@@ -6,7 +6,7 @@ import API from "../utils/api.js";
 function addPost() {
 	const [postData, setPostData] = useState({
 		title: "",
-		content: "Enter post content here.",
+		content: null,
 		isPublished: false,
 		blogId: 1,
 	});
@@ -95,6 +95,7 @@ function addPost() {
 						onEditorChange={handleContentChange}
 						value={postData.content}
 						init={{
+							plageholder: 'Type in what you have in mind.',
 							height: 500,
 							menubar: false,
 							toolbar:
