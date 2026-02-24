@@ -19,7 +19,6 @@ export function generateAccessToken(user) {
     {
       expiresIn: ACCESS_TOKEN_EXPIRY,
       algorithm: 'HS256',
-      
     }
   );
 }

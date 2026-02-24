@@ -11,4 +11,4 @@ userRouter.get('/blog/:id', userController.getBlogAuthor);
 userRouter.post('/managePost', userController.addTokenData);
 userRouter.get('/validate/:jti', userController.validateToken);
 
-export default userRouter;
+export default userRouter; 

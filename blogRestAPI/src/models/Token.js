@@ -1,7 +1,7 @@
 import {prisma} from '../config/prisma.js';
 
 export async function findTokenByJti(jti) {
-  return await prisma.token.findUnique({
+  return await prisma.jwtBlacklist.findUnique({
     where: {
       jti: jti,
     },
@@ -20,11 +20,18 @@ export async function blacklistToken(token,id) {
 }
 
 export async function addTokenInfo(token, jti){
-  return await prisma.managePostInfo.create({
-    data:{
-			token: token,
-			uuid: jti
-		}
+  return await prisma.managePostInfo.upsert({
+    where:{
+      token: token
+    },
+    update:{
+      token: token,
+      uuid: jti
+    },
+    create: {
+      token: token,
+      uuid: jti
+    }
   })
 }
 

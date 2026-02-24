@@ -1,5 +1,6 @@
+/** biome-ignore-all lint/correctness/useHookAtTopLevel: <explanation> */
 import { Editor } from "@tinymce/tinymce-react";
-import { useRef, useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import API from "../utils/api.js";
 
@@ -11,30 +12,42 @@ function addPost() {
 		blogId: 1,
 	});
 	const editorRef = useRef(null);
-	const [searchParams, setSearchParams] = useSearchParams();
+	const [searchParams] = useSearchParams();
 
 	const jti = searchParams.get("tkn");
 
-	useEffect(()=>{
-		if(!jti){
+	useEffect(() => {
+		if (!jti) {
 			window.location.href = `${import.meta.env.VITE_ACCESS_BLOG}`;
 		}
-		async function validateJTI(jti){
+		async function validateJTI(jti) {
 			try {
 				const response = await API.get(`/user/validate/${jti}`);
-				if(!response.data){
-					alert('Invalid token');
+				if (!response.data) {
+					alert("Invalid token");
 					window.location.href = `${import.meta.env.VITE_ACCESS_BLOG}`;
 				}
-				localStorage.setItem('token', response.data.token);
+				localStorage.setItem("token", response.data.token);
+				console.log(localStorage.getItem("token"));
 				console.log(response);
-				console.log('token set');
+				console.log("token set");
+
+				try {
+					if (response.data) {
+						const validate = await API.get(`/post/add`);
+						console.log(validate);
+						console.log("User validated");
+					}
+				} catch (error) {
+					alert("You do not have permission to add a post", error);
+					// window.location.href = `${import.meta.env.VITE_ACCESS_BLOG}`;
+				}
 			} catch (error) {
 				console.log(error);
 			}
 		}
 		validateJTI(jti);
-	},[jti])
+	}, [jti]);
 
 	const handleChange = (event) => {
 		setPostData({
@@ -54,11 +67,15 @@ function addPost() {
 	const handleSubmit = async (event) => {
 		event.preventDefault();
 		try {
-			const response = await API.post(`/post/add`, { postData }, {
-				headers: {
-					"Content-Type": "application/json",
+			const response = await API.post(
+				`/post/add`,
+				{ postData },
+				{
+					headers: {
+						"Content-Type": "application/json",
+					},
 				},
-			});
+			);
 			console.log(response);
 			alert("Post added successfully");
 		} catch (error) {
@@ -69,9 +86,8 @@ function addPost() {
 		return;
 	};
 
-
 	return (
-		<>
+		<div>
 			<h1>Add New Post</h1>
 			<form onSubmit={handleSubmit}>
 				<label>
@@ -95,7 +111,7 @@ function addPost() {
 						onEditorChange={handleContentChange}
 						value={postData.content}
 						init={{
-							plageholder: 'Type in what you have in mind.',
+							plageholder: "Type in what you have in mind.",
 							height: 500,
 							menubar: false,
 							toolbar:
@@ -108,7 +124,8 @@ function addPost() {
 						}}
 					/>
 				</label>
-				<label htmlFor="published">Publish now? 
+				<label htmlFor="published">
+					Publish now?
 					<input
 						type="checkbox"
 						name="published"
@@ -121,7 +138,7 @@ function addPost() {
 				<br />
 				<button type="submit">Save</button>
 			</form>
-		</>
+		</div>
 	);
 }
 

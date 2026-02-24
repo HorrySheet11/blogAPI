@@ -46,7 +46,6 @@ export async function findBlogById(id){
 }
 
 
-
 export async function findUserById(id){
   return await prisma.user.findUnique({
     where: {

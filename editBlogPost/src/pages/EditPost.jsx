@@ -6,9 +6,32 @@ import API from "../utils/api.js";
 function editPost() {
 	const [postData, setPostData] = useState(null);
 	const editorRef = useRef(null);
-	const [searchParams, setSearchParams] = useSearchParams();
+	const [searchParams] = useSearchParams();
 
 	const id = searchParams.get("id");
+	const jti = searchParams.get("tkn");
+
+  //* validate jti to access edit post
+  useEffect(()=>{
+      if(!jti){
+        window.location.href = `${import.meta.env.VITE_ACCESS_BLOG}`;
+      }
+      async function validateJTI(jti){
+        try {
+          const response = await API.get(`/user/validate/${jti}`);
+          if(!response.data){
+            alert('Invalid token');
+            window.location.href = `${import.meta.env.VITE_ACCESS_BLOG}`;
+          }
+          localStorage.setItem('token', response.data.token);
+          console.log(response);
+          console.log('token set');
+        } catch (error) {
+          console.log(error);
+        }
+      }
+      validateJTI(jti);
+    },[jti])
 
 	useEffect(() => {
 		console.log(id);

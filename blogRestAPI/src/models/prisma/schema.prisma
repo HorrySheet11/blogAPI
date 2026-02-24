@@ -70,7 +70,7 @@ model JwtBlacklist {
 }
 
 model ManagePostInfo{
-  id      Int      @id @default(autoincrement())
-  token   String
-  uuid    String
+  id      Int     @id @default(autoincrement())
+  token   String  @unique
+  uuid    String  @unique
 }

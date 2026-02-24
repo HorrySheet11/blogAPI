@@ -38,5 +38,7 @@ export async function updatePost(req,res){
 }
 
 export async function goToAddPost(req,res){
-  res.redirect("https://localhost:3000/post/add");
+  const auth = req.headers.authorization;
+  console.log(auth);
+  res.status(200).json({message: 'User authorized!', success: true});
 }

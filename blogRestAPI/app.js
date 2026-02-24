@@ -6,7 +6,6 @@ import passport from 'passport';
 import "./src/config/passport.js";
 import bodyParser from 'body-parser';
 
-//FIXME: req.body is undefined
 const app = express();
 app.use((req, res, next) => {
   express.json()(req, res, (err) => {
@@ -15,7 +14,7 @@ app.use((req, res, next) => {
   });
 }); 
 
-app.use(bodyParser.json());
+// app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(passport.initialize());

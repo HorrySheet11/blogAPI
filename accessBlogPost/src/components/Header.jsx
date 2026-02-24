@@ -10,7 +10,7 @@ function Header() {
 	const { user, setUser, loading, setLoading } = useContext(AuthContext);
 	const nav = useNavigate();
 	const dialogRef = useRef(null);
-	const  [decoded, setDecoded] = useState({});
+	const [decoded, setDecoded] = useState({});
 
 	//* get user if existing token
 	useEffect(() => {
@@ -29,11 +29,13 @@ function Header() {
 			getUser(decoded.sub);
 			setLoading(false);
 		}
-	}, [setLoading, setUser, user, decoded.sub]);
+	}, [ decoded, setLoading, setUser, user]);
 
-	useEffect(() => {
-		console.log(decoded);
-	}, [decoded]);
+	// useEffect(() => {
+	// 	if(!user){
+	// 		window.location.href = `${import.meta.env.VITE_ACCESS_BLOG}`;
+	// 	}
+	// }, [user]);
 
 	const logout = async () => {
 		try {
@@ -60,7 +62,7 @@ function Header() {
 		const data = { jti: decoded.jti ,
 			token: localStorage.getItem("token"), 
 			};
-			console.log(data)
+			console.log(decoded)
 		try {
 			const response = await API.post(`/user/managePost`, data, {
 				headers: { "Content-Type": "application/json" },

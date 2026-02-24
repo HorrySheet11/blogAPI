@@ -47,7 +47,7 @@ function LogIn({closeModal}){
 	};
 
   const goToSignUp = () => {
-    nav("/sign-up")
+    nav("/user/sign-up")
   }
   return(
     <>

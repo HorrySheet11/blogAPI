@@ -32,7 +32,8 @@ function SignUp() {
 				timeout: 5000,
 			});
 			setResponseData(response.data)
-			return alert("Server Response:", responseData);
+			alert("Server Response:", responseData);
+			nav('/');
 		} catch (error) {
 			console.error("Error submitting form:", error);
 			alert("Failed to submit form.");

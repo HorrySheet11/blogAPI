@@ -3,6 +3,7 @@ import passport from "passport";
 import { ExtractJwt, Strategy as JwtStrategy } from "passport-jwt";
 import { Strategy as LocalStrategy } from "passport-local";
 import * as query from "../models/User.js";
+import * as token from "../models/Token.js";
 
 passport.use(
 	new LocalStrategy(
@@ -33,6 +34,7 @@ passport.use(
 	),
 );
 
+//FIXME: JWT being not recognized/401 unauthorized
 passport.use(
 	new JwtStrategy(
 		{
@@ -42,13 +44,10 @@ passport.use(
 		},
 		async (payload, done) => {
 			try {
+				console.log(payload);
 				// Check if token is blacklisted
-				// const result = await pool.query(
-				// 	"SELECT 1 FROM token_blacklist WHERE token = $1 LIMIT 1",
-				// 	[jwt_payload.jti], // jti = unique token ID
-
-				const result = await query.findTokenByJti(payload.jti);
-				if (result.rowCount > 0) {
+				const result = await token.findTokenByJti(payload.jti);
+				if (result) {
 					return done(null, false, { message: "Token is blacklisted" });
 				}
 				const user = await query.findUserById(payload.sub);
@@ -57,7 +56,7 @@ passport.use(
 				}
 				return done(null, user);
 			} catch (error) {
-				return done(error);
+				return done(error, false);
 			}
 		},
 	),
