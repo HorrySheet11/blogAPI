@@ -167,7 +167,7 @@ export async function getBlogAuthor(req, res) {
 
 export async function addTokenData(req, res) {
 	console.log(req.body)
-	try {
+	// try {
 		const token = req.body.token;
 		const jti = req.body.jti;
 		const addToken = await addTokenInfo(token, jti);
@@ -175,9 +175,9 @@ export async function addTokenData(req, res) {
 			return res.status(404).json({ error: "Token not found" });
 		}
 		return res.json(addToken);
-	} catch (err) {
-		res.status(500).json({ error: "Error adding token info" });
-	}
+	// } catch (err) {
+	// 	res.status(500).json({ error: "Error adding token info" });
+	// }
 }
 
 export async function validateToken(req, res) {

@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/correctness/useHookAtTopLevel: <explanation> */
 import { Editor } from "@tinymce/tinymce-react";
 import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
@@ -11,27 +12,26 @@ function editPost() {
 	const id = searchParams.get("id");
 	const jti = searchParams.get("tkn");
 
-  //* validate jti to access edit post
-  useEffect(()=>{
-      if(!jti){
-        window.location.href = `${import.meta.env.VITE_ACCESS_BLOG}`;
-      }
-      async function validateJTI(jti){
-        try {
-          const response = await API.get(`/user/validate/${jti}`);
-          if(!response.data){
-            alert('Invalid token');
-            window.location.href = `${import.meta.env.VITE_ACCESS_BLOG}`;
-          }
-          localStorage.setItem('token', response.data.token);
-          console.log(response);
-          console.log('token set');
-        } catch (error) {
-          console.log(error);
-        }
-      }
-      validateJTI(jti);
-    },[jti])
+	//* validate jti to access edit post
+	useEffect(() => {
+		if (!jti) {
+			window.location.href = `${import.meta.env.VITE_ACCESS_BLOG}`;
+		}
+		async function validateJTI(jti) {
+			try {
+				const response = await API.get(`/user/validate/${jti}`);
+				if (!response.data) {
+					alert("Invalid token");
+					window.location.href = `${import.meta.env.VITE_ACCESS_BLOG}`;
+				}
+				localStorage.setItem("token", response.data.token);
+
+			} catch (error) {
+				console.log(error);
+			}
+		}
+		validateJTI(jti);
+	}, [jti]);
 
 	useEffect(() => {
 		console.log(id);
@@ -41,15 +41,14 @@ function editPost() {
 		}
 		try {
 			getPost(id);
-      console.log(postData);
 		} catch (error) {
 			console.log(error);
 		}
 	}, [id]);
 
-  useEffect(()=>{
-    console.log(postData);
-  },[])
+	useEffect(() => {
+		console.log(postData);
+	}, [postData]);
 
 	const handleChange = (event) => {
 		setPostData({
@@ -68,26 +67,26 @@ function editPost() {
 	};
 
 	const handleSubmit = async (e) => {
-    e.preventDefault();
+		e.preventDefault();
 		console.log(postData);
 		try {
 			const response = await API.put(
-				`/post/update/${id}`, {postData},
+				`/post/update/${id}`,
+				{ postData },
 				{
 					headers: {
 						"Content-Type": "application/json",
 					},
-				}
+				},
 			);
 			alert(response.data.message);
 		} catch (error) {
 			console.log(error);
-      return;
+			return;
 		}
-    window.location.href = `${import.meta.env.VITE_ACCESS_BLOG}`;
-    return;
+		window.location.href = `${import.meta.env.VITE_ACCESS_BLOG}`;
+		return;
 	};
-
 
 	return (
 		<form onSubmit={handleSubmit}>
@@ -130,7 +129,7 @@ function editPost() {
 					type="checkbox"
 					name="published"
 					id="published"
-          checked={postData?.isPublished}
+					checked={postData?.isPublished}
 					onChange={() =>
 						setPostData({ ...postData, isPublished: !postData.isPublished })
 					}

@@ -15,6 +15,7 @@ function addPost() {
 	const [searchParams] = useSearchParams();
 
 	const jti = searchParams.get("tkn");
+	const blogId = searchParams.get("blogId");
 
 	useEffect(() => {
 		if (!jti) {
@@ -27,27 +28,24 @@ function addPost() {
 					alert("Invalid token");
 					window.location.href = `${import.meta.env.VITE_ACCESS_BLOG}`;
 				}
-				localStorage.setItem("token", response.data.token);
-				console.log(localStorage.getItem("token"));
-				console.log(response);
-				console.log("token set");
-
-				try {
-					if (response.data) {
-						const validate = await API.get(`/post/add`);
-						console.log(validate);
-						console.log("User validated");
-					}
-				} catch (error) {
-					alert("You do not have permission to add a post", error);
-					// window.location.href = `${import.meta.env.VITE_ACCESS_BLOG}`;
-				}
+				localStorage.setItem("token", response.data.token)
+				setPostData({
+					...postData,
+					blogId: blogId
+				})
+				
+				await new Promise(() => {
+					console.log(localStorage.getItem('token'));
+					const validate = API.get(`/post/add`);
+					console.log(validate);
+					console.log("User validated");
+				});
 			} catch (error) {
 				console.log(error);
 			}
 		}
 		validateJTI(jti);
-	}, [jti]);
+	}, [jti, blogId]);
 
 	const handleChange = (event) => {
 		setPostData({
@@ -65,6 +63,7 @@ function addPost() {
 	};
 
 	const handleSubmit = async (event) => {
+		console.log(postData);
 		event.preventDefault();
 		try {
 			const response = await API.post(

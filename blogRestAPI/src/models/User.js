@@ -51,5 +51,8 @@ export async function findUserById(id){
     where: {
       id: parseInt(id, 10),
     },
+		include: {
+			blog: true
+		}
   })
 }

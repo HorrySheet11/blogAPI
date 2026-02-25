@@ -14,7 +14,7 @@ export async function addPost(req,res){
   console.log(req.body.postData);
   try {
     const { title, content, isPublished, blogId } = req.body.postData;
-    const result = await createPost(title, content, isPublished, blogId);
+    const result = await createPost(title, content, isPublished, parseInt(blogId, 10));
     res.json(result);
     
   } catch (error) {

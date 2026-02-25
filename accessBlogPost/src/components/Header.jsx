@@ -67,7 +67,7 @@ function Header() {
 			const response = await API.post(`/user/managePost`, data, {
 				headers: { "Content-Type": "application/json" },
 			});
-			window.location = `${import.meta.env.VITE_EDIT_POST_URL}/post/add/?tkn=${decoded.jti}`;
+			window.location = `${import.meta.env.VITE_EDIT_POST_URL}/post/add/?tkn=${decoded.jti}&blogId=${user.blog.id}`;
 		} catch (error) {
 			console.log(error);
 		}
