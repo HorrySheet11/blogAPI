@@ -2,8 +2,8 @@ import bcrypt from "bcryptjs";
 import passport from "passport";
 import { ExtractJwt, Strategy as JwtStrategy } from "passport-jwt";
 import { Strategy as LocalStrategy } from "passport-local";
-import * as query from "../models/User.js";
 import * as token from "../models/Token.js";
+import * as query from "../models/User.js";
 
 passport.use(
 	new LocalStrategy(
@@ -34,7 +34,6 @@ passport.use(
 	),
 );
 
-//FIXME: JWT being not recognized/401 unauthorized
 passport.use(
 	new JwtStrategy(
 		{
@@ -44,7 +43,9 @@ passport.use(
 		},
 		async (payload, done) => {
 			try {
-				console.log(payload);
+				if (Date.now() >= payload.exp * 1000) {
+					return done(null, false, { message: "Token expired" });
+				}
 				// Check if token is blacklisted
 				const result = await token.findTokenByJti(payload.jti);
 				if (result) {

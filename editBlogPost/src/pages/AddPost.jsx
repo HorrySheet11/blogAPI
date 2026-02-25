@@ -1,4 +1,4 @@
-/** biome-ignore-all lint/correctness/useHookAtTopLevel: <explanation> */
+/** biome-ignore-all lint/correctness/useHookAtTopLevel: just a bug */
 import { Editor } from "@tinymce/tinymce-react";
 import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
@@ -45,7 +45,7 @@ function addPost() {
 			}
 		}
 		validateJTI(jti);
-	}, [jti, blogId]);
+	}, [jti, blogId, postData]);
 
 	const handleChange = (event) => {
 		setPostData({

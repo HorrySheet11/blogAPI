@@ -1,4 +1,4 @@
-/** biome-ignore-all lint/correctness/useHookAtTopLevel: <explanation> */
+/** biome-ignore-all lint/correctness/useHookAtTopLevel: just a bug */
 import { Editor } from "@tinymce/tinymce-react";
 import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
@@ -46,10 +46,6 @@ function editPost() {
 		}
 	}, [id]);
 
-	useEffect(() => {
-		console.log(postData);
-	}, [postData]);
-
 	const handleChange = (event) => {
 		setPostData({
 			...postData,
@@ -68,7 +64,6 @@ function editPost() {
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-		console.log(postData);
 		try {
 			const response = await API.put(
 				`/post/update/${id}`,
@@ -79,7 +74,7 @@ function editPost() {
 					},
 				},
 			);
-			alert(response.data.message);
+			alert("Post updated successfully");
 		} catch (error) {
 			console.log(error);
 			return;

@@ -1,6 +1,7 @@
 import { jwtDecode } from "jwt-decode";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import parse from 'html-react-parser';
 import Header from "../components/Header";
 import { AuthContext } from "../context/AuthContext.jsx";
 import API from "../utils/api.js";
@@ -53,7 +54,7 @@ function InspectPost() {
 						<p>Author: {postData?.blog.authorName}</p>
 					)}
 
-					<h4>{postData?.content}</h4>
+					{postData && parse(postData?.content)}
 					<button type="button" onClick={() => nav("/")}>
 						Back
 					</button>

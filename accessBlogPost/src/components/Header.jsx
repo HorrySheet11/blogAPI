@@ -8,34 +8,39 @@ import API from "../utils/api.js";
 
 function Header() {
 	const { user, setUser, loading, setLoading } = useContext(AuthContext);
-	const nav = useNavigate();
-	const dialogRef = useRef(null);
 	const [decoded, setDecoded] = useState({});
+	const [message, setMessage] = useState('');
+	const dialogRef = useRef(null);
+	const isMounted = useRef(false);
+	const nav = useNavigate();
 
 	//* get user if existing token
 	useEffect(() => {
 		if (!user && localStorage.getItem("token")) {
+			setLoading(true);
 			setDecoded(jwtDecode(localStorage.getItem("token")));
-			async function getUser(id) {
-				setLoading(true);
-				try {
-					const response = await API.get(`/user/${id}`);
-					setUser(response.data);
-				} catch (error) {
-					console.log(error);
-				}
-				return;
-			}
-			getUser(decoded.sub);
+
 			setLoading(false);
 		}
-	}, [ decoded, setLoading, setUser, user]);
+	}, [setLoading, user]);
 
-	// useEffect(() => {
-	// 	if(!user){
-	// 		window.location.href = `${import.meta.env.VITE_ACCESS_BLOG}`;
-	// 	}
-	// }, [user]);
+	useEffect(() => {
+		async function getUser(id) {
+			const response = await API.get(`/user/${id}`);
+			setUser(response.data);
+			setMessage(response.data.message);
+			return;
+		}
+		if (isMounted.current) {
+			try {
+				if (decoded) getUser(decoded.sub);
+			} catch (error) {
+				console.log(error);
+			}
+		} else {
+			isMounted.current = true;
+		}
+	}, [decoded, setUser]);
 
 	const logout = async () => {
 		try {
@@ -59,10 +64,8 @@ function Header() {
 	//* on add/edit post get jti and get token based on jti
 	//* if no then go back to home
 	async function goToAddPost() {
-		const data = { jti: decoded.jti ,
-			token: localStorage.getItem("token"), 
-			};
-			console.log(decoded)
+		const data = { jti: decoded.jti, token: localStorage.getItem("token") };
+		console.log(decoded);
 		try {
 			const response = await API.post(`/user/managePost`, data, {
 				headers: { "Content-Type": "application/json" },
@@ -79,6 +82,7 @@ function Header() {
 				<h2>Horry Blog</h2>
 				{user && <h3>Welcome {user.name}</h3>}
 				{loading && <h3>Loading...</h3>}
+				{message && <h3>{message}</h3>}
 				<ul>
 					<li>
 						<button type="button" onClick={() => nav("/")}>

@@ -52,7 +52,6 @@ export async function logout(req, res) {
 		}
 		const token = authHeader.split(" ")[1];
 		const decoded = jwt.decode(token, process.env.JWT_SECRET);
-		console.log(decoded);
 		//* Add token's jti to blacklist
 		await blacklistToken(decoded, decoded.sub);
 		res.status(200).json({ message: "Logged out successfully" });
@@ -64,7 +63,6 @@ export async function logout(req, res) {
 }
 
 export async function signUp(req, res) {
-	console.log(req.body);
 	try {
 		const { email, password, name } = req.body;
 
@@ -79,8 +77,6 @@ export async function signUp(req, res) {
 		}
 
 		const existingUser = await findUserByEmail(email);
-		console.log(`existingUser:`);
-		console.log(existingUser);
 		if (existingUser) {
 			return res.json({ error: "Email already registered" }).status(409);
 		}
@@ -166,8 +162,7 @@ export async function getBlogAuthor(req, res) {
 }
 
 export async function addTokenData(req, res) {
-	console.log(req.body)
-	// try {
+	try {
 		const token = req.body.token;
 		const jti = req.body.jti;
 		const addToken = await addTokenInfo(token, jti);
@@ -175,9 +170,9 @@ export async function addTokenData(req, res) {
 			return res.status(404).json({ error: "Token not found" });
 		}
 		return res.json(addToken);
-	// } catch (err) {
-	// 	res.status(500).json({ error: "Error adding token info" });
-	// }
+	} catch (err) {
+		res.status(500).json({ error: "Error adding token info" });
+	}
 }
 
 export async function validateToken(req, res) {
